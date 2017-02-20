@@ -4,7 +4,8 @@
   "description": "Nodejs and Javascript library for decoding data params and events from etherem transactions\"",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha test",
+    "dist": "webpack && webpack --optimize-minimize --output-path dist --output-filename abiDecoder"
   },
   "repository": {
     "type": "git",
@@ -22,8 +23,11 @@
   },
   "homepage": "https://github.com/ConsenSys/abi-decoder#readme",
   "dependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
-    "web3": "^0.18.2"
+    "web3": "^0.18.2",
+    "webpack": "^2.2.1"
   }
 }

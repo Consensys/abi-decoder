@@ -21,7 +21,7 @@ function _addABI(abiArray) {
               state.methodIDs[signature.slice(2)] = abi;
             }
             else{
-              state.methodIDs[signature.slice(2, 6)] = abi;
+              state.methodIDs[signature.slice(2, 10)] = abi;
             }
           }
     });
@@ -38,7 +38,7 @@ function _getMethodIDs() {
 }
 
 function _decodeMethod(data) {
-  const methodID = data.slice(2, 6);
+  const methodID = data.slice(2, 10);  
   const abiItem = state.methodIDs[methodID];
   if (abiItem) {
     const params = abiItem.inputs.map((item) => item.type);
