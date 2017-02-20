@@ -1,6 +1,6 @@
 {
   "name": "abi-decoder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Nodejs and Javascript library for decoding data params and events from etherem transactions\"",
   "main": "index.js",
   "scripts": {
