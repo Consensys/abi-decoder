@@ -9,8 +9,8 @@ bower install abi-decoder
 
 # Instantiate
 ```js
-<script src="bower_components/abi-decoder/dist/abi-decoder.js">
-const abiDecoder = require('abi-decoder');
+<script src="bower_components/abi-decoder/dist/abi-decoder.js"> // Javascript
+const abiDecoder = require('abi-decoder'); // NodeJS
 ```
 
 # Add ABI's
