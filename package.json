@@ -1,11 +1,11 @@
 {
   "name": "abi-decoder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Nodejs and Javascript library for decoding data params and events from etherem transactions\"",
   "main": "index.js",
   "scripts": {
     "test": "mocha test",
-    "dist": "webpack && webpack --optimize-minimize --output-path dist --output-filename abiDecoder"
+    "dist": "webpack"
   },
   "repository": {
     "type": "git",

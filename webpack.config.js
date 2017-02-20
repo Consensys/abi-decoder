@@ -3,7 +3,7 @@ module.exports = {
   output: {
     filename: './dist/abi-decoder.js',
     libraryTarget: 'var',
-    library: 'abi-decoder',
+    library: 'abiDecoder',
   },
   module: {
     loaders: [

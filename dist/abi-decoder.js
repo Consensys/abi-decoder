@@ -1,4 +1,4 @@
-var abi-decoder =
+var abiDecoder =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
