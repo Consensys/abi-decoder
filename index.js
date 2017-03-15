@@ -77,7 +77,8 @@ function _decodeMethod(data) {
         }
         return {
           name: abiItem.inputs[index].name,
-          value: parsedParam
+          value: parsedParam,
+          type: abiItem.inputs[index].type
         };
       })
     }
@@ -96,7 +97,8 @@ function _decodeLogs(logs) {
       // Loop topic and data to get the params
       method.inputs.map(function (param) {
         var decodedP = {
-          name: param.name
+          name: param.name,
+          type: param.type
         };
 
         if (param.indexed) {
