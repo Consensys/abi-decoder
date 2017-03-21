@@ -92,8 +92,18 @@ function _decodeLogs(logs) {
     if (method) {
       const logData = logItem.data;
       let decodedParams = [];
-      let dataIndex = 2;
+      let dataIndex = 0;
       let topicsIndex = 1;
+
+      let dataTypes = [];
+      method.inputs.map(
+        (input) => {
+          if (!input.indexed) {
+            dataTypes.push(input.type);
+          }
+        }
+      );
+      const decodedData = SolidityCoder.decodeParams(dataTypes, logData.slice(2));
       // Loop topic and data to get the params
       method.inputs.map(function (param) {
         var decodedP = {
@@ -106,9 +116,8 @@ function _decodeLogs(logs) {
           topicsIndex++;
         }
         else {
-          let dataEndIndex = dataIndex + 64;
-          decodedP.value = "0x" + logData.slice(dataIndex, dataEndIndex);
-          dataIndex = dataEndIndex;
+          decodedP.value = decodedData[dataIndex];
+          dataIndex++;
         }
 
         if (param.type == "address"){
