@@ -133,7 +133,8 @@ function _decodeLogs(logs) {
 
       return {
         name: method.name,
-        events: decodedParams
+        events: decodedParams,
+        address: logItem.address
       };
     }
   });

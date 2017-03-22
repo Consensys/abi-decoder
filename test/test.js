@@ -45,7 +45,8 @@ describe('abi decoder', function () {
     const testLogs = [
       {
         data: "0x00000000000000000000000065039084cc6f4773291a6ed7dcf5bc3a2e894ff3000000000000000000000000435a4167bc34107bd03e267f9d6b869255151a27",
-        topics: ["0x4fb057ad4a26ed17a57957fa69c306f11987596069b89521c511fc9a894e6161"]
+        topics: ["0x4fb057ad4a26ed17a57957fa69c306f11987596069b89521c511fc9a894e6161"],
+        address: "0x0457874Bb0a346962128a0C01310d00Fc5bb6a83"
       }
     ];
 
@@ -54,6 +55,7 @@ describe('abi decoder', function () {
     expect(decodedLogs).to.have.length(1);
     expect(decodedLogs[0].name).to.equal('ContractInstantiation');
     expect(decodedLogs[0].events).to.have.length(2);
+    expect(decodedLogs[0].address).to.equal('0x0457874Bb0a346962128a0C01310d00Fc5bb6a83');
     expect(decodedLogs[0].events[0].name).to.equal('sender');
     expect(decodedLogs[0].events[0].value).to.equal('0x65039084cc6f4773291a6ed7dcf5bc3a2e894ff3');
     expect(decodedLogs[0].events[0].type).to.equal('address');
@@ -68,7 +70,8 @@ describe('abi decoder', function () {
     const testLogs = [
       {
         data: "0x00000000000000000000000000000000000000000000000000038d7ea4c68000",
-        topics: ["0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c", "0x00000000000000000000000065039084cc6f4773291a6ed7dcf5bc3a2e894ff3"]
+        topics: ["0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c", "0x00000000000000000000000065039084cc6f4773291a6ed7dcf5bc3a2e894ff3"],
+        address: '0x0457874Bb0a346962128a0C01310d00Fc5bb6a81'
       }
     ];
     const decodedLogs = abiDecoder.decodeLogs(testLogs);
@@ -76,6 +79,7 @@ describe('abi decoder', function () {
     expect(decodedLogs).to.have.length(1);
     expect(decodedLogs[0].name).to.equal('Deposit');
     expect(decodedLogs[0].events).to.have.length(2);
+    expect(decodedLogs[0].address).to.equal('0x0457874Bb0a346962128a0C01310d00Fc5bb6a81');
     expect(decodedLogs[0].events[0].name).to.equal('sender');
     expect(decodedLogs[0].events[0].type).to.equal('address');
     expect(decodedLogs[0].events[0].value).to.equal('0x65039084cc6f4773291a6ed7dcf5bc3a2e894ff3');
