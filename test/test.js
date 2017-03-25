@@ -70,7 +70,7 @@ describe('abi decoder', function () {
     const testLogs = [
       {
         data: "0x00000000000000000000000000000000000000000000000000038d7ea4c68000",
-        topics: ["0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c", "0x00000000000000000000000065039084cc6f4773291a6ed7dcf5bc3a2e894ff3"],
+        topics: ["0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c", "0x00000000000000000000000005039084cc6f4773291a6ed7dcf5bc3a2e894ff3"],
         address: '0x0457874Bb0a346962128a0C01310d00Fc5bb6a81'
       }
     ];
@@ -82,7 +82,7 @@ describe('abi decoder', function () {
     expect(decodedLogs[0].address).to.equal('0x0457874Bb0a346962128a0C01310d00Fc5bb6a81');
     expect(decodedLogs[0].events[0].name).to.equal('sender');
     expect(decodedLogs[0].events[0].type).to.equal('address');
-    expect(decodedLogs[0].events[0].value).to.equal('0x65039084cc6f4773291a6ed7dcf5bc3a2e894ff3');
+    expect(decodedLogs[0].events[0].value).to.equal('0x05039084cc6f4773291a6ed7dcf5bc3a2e894ff3');
     expect(decodedLogs[0].events[1].name).to.equal('value');
     expect(decodedLogs[0].events[1].value).to.equal('1000000000000000');
     expect(decodedLogs[0].events[1].type).to.equal('uint256');

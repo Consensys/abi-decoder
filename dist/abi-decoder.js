@@ -18010,6 +18010,21 @@ function _decodeMethod(data) {
   }
 }
 
+function padZeros(address) {
+  var formatted = address;
+  if (address.indexOf('0x') != -1) {
+    formatted = address.slice(2);
+  }
+
+  if (formatted.length < 40) {
+    while (formatted.length < 40) {
+      formatted = "0" + formatted;
+    }
+  }
+
+  return "0x" + formatted;
+};
+
 function _decodeLogs(logs) {
   return logs.map(function (logItem) {
     var methodID = logItem.topics[0].slice(2);
@@ -18043,7 +18058,7 @@ function _decodeLogs(logs) {
         }
 
         if (param.type == "address") {
-          decodedP.value = "0x" + new Web3().toBigNumber(decodedP.value).toString(16);
+          decodedP.value = padZeros(new Web3().toBigNumber(decodedP.value).toString(16));
         } else if (param.type == "uint256" || param.type == "uint8" || param.type == "int") {
           decodedP.value = new Web3().toBigNumber(decodedP.value).toString(10);
         }
