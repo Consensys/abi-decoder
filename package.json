@@ -33,6 +33,6 @@
     "webpack": "^2.2.1"
   },
   "devDependencies": {
-    "mocha": "^3.2.0"
+    "mocha": "^4.0.0"
   }
 }
