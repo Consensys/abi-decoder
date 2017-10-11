@@ -2,7 +2,7 @@ const expect = require('chai').expect;
 const abiDecoder = require('../index.js');
 
 // Test Params
-const testABI = [{"inputs": [{"type": "address", "name": ""}], "constant": true, "name": "isInstantiation", "payable": false, "outputs": [{"type": "bool", "name": ""}], "type": "function"}, {"inputs": [{"type": "address[]", "name": "_owners"}, {"type": "uint256", "name": "_required"}, {"type": "uint256", "name": "_dailyLimit"}], "constant": false, "name": "create", "payable": false, "outputs": [{"type": "address", "name": "wallet"}], "type": "function"}, {"inputs": [{"type": "address", "name": ""}, {"type": "uint256", "name": ""}], "constant": true, "name": "instantiations", "payable": false, "outputs": [{"type": "address", "name": ""}], "type": "function"}, {"inputs": [{"type": "address", "name": "creator"}], "constant": true, "name": "getInstantiationCount", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"indexed": false, "type": "address", "name": "sender"}, {"indexed": false, "type": "address", "name": "instantiation"}], "type": "event", "name": "ContractInstantiation", "anonymous": false}];
+const testABI = [{"inputs": [{"type": "address", "name": ""}], "constant": true, "name": "isInstantiation", "payable": false, "outputs": [{"type": "bool", "name": ""}], "type": "function"}, {"inputs": [{"type": "address[]", "name": "_owners"}, {"type": "uint256", "name": "_required"}, {"type": "uint256", "name": "_dailyLimit"}], "constant": false, "name": "create", "payable": false, "outputs": [{"type": "address", "name": "wallet"}], "type": "function"}, {"inputs": [{"type": "address", "name": ""}, {"type": "uint256", "name": ""}], "constant": true, "name": "instantiations", "payable": false, "outputs": [{"type": "address", "name": ""}], "type": "function"}, {"inputs": [{"type": "address", "name": "creator"}], "constant": true, "name": "getInstantiationCount", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"indexed": false, "type": "address", "name": "sender"}, {"indexed": false, "type": "address", "name": "instantiation"}], "type": "event", "name": "ContractInstantiation", "anonymous": false},{"inputs":[{"name":"company","type":"address"},{"name":"pRootOfTrust","type":"address"},{"name":"pOptionsCalculator","type":"address"},{"name":"pEmployeesList","type":"address"}],"payable":false,"type":"constructor"}];
 
 describe('abi decoder', function () {
   it('get abis', () => {
@@ -15,10 +15,32 @@ describe('abi decoder', function () {
     abiDecoder.addABI(testABI);
     const abis = abiDecoder.getABIs();
     expect(abis).to.be.an('array');
-    expect(abis).to.have.length.of(5);
+    expect(abis).to.have.length.of(6);
     const methodIDs = abiDecoder.getMethodIDs();
     expect(methodIDs).to.be.an('object');
-    expect(Object.keys(methodIDs)).to.have.length.of(5);
+    expect(Object.keys(methodIDs)).to.have.length.of(6);
+  });
+  it('decode constructor', () => {
+    const testAddress = "0x0457874Bb0a346962128a0C01310d00Fc5bb6a83";
+    abiDecoder.addABI(testABI,testAddress);
+    const testData = "0x0000000000000000000000000c53fe380aba335d144b6f0dbc6b588633f783d7000000000000000000000000f3a85b1c8818629e52d61236e9ff5f531e52d8ed0000000000000000000000002ad565023d39f5f8a6afdc625c0285bbc2d52276000000000000000000000000d35504e0f9bdcf8bca1ce7ec51fa2db514029182";
+    const decodedData = abiDecoder.decodeConstructor(testData,testAddress);
+    expect(decodedData).to.be.an('object');
+    expect(decodedData).to.have.all.keys('name', 'params');
+    expect(decodedData.name).to.be.a('string');
+    expect(decodedData.params).to.be.a('array');
+    expect(decodedData.params[0].value).to.deep.equal('0x0aba335d144b6f0dbc6b588633f783d700000000');
+    expect(decodedData.params[0].name).to.equal('company');
+    expect(decodedData.params[0].type).to.equal('address');
+    expect(decodedData.params[1].value).to.deep.equal('0x8818629e52d61236e9ff5f531e52d8ed00000000');
+    expect(decodedData.params[1].name).to.equal('pRootOfTrust');
+    expect(decodedData.params[1].type).to.equal('address');
+    expect(decodedData.params[2].value).to.deep.equal('0x3d39f5f8a6afdc625c0285bbc2d5227600000000');
+    expect(decodedData.params[2].name).to.equal('pOptionsCalculator');
+    expect(decodedData.params[2].type).to.equal('address');
+    expect(decodedData.params[3].value).to.deep.equal('0xd35504e0f9bdcf8bca1ce7ec51fa2db514029182');
+    expect(decodedData.params[3].name).to.equal('pEmployeesList');
+    expect(decodedData.params[3].type).to.equal('address');
   });
 
   it('decode data', () => {
@@ -91,8 +113,7 @@ describe('abi decoder', function () {
   it('remove ABI', () => {
     let methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an('object');
-    expect(Object.keys(methods)).to.have.length.of(41);
-
+    expect(Object.keys(methods)).to.have.length.of(37);
     abiDecoder.removeABI(testABI);
 
     methods = abiDecoder.getMethodIDs();
