@@ -1,6 +1,6 @@
 {
   "name": "abi-decoder",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Nodejs and Javascript library for decoding data params and events from ethereum transactions\"",
   "main": "index.js",
   "scripts": {
@@ -33,6 +33,6 @@
     "webpack": "^2.2.1"
   },
   "devDependencies": {
-    "mocha": "^3.2.0"
+    "mocha": "^4.0.0"
   }
 }
