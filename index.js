@@ -14,7 +14,7 @@ function _addABI(abiArray) {
   if (Array.isArray(abiArray)) {
 
     // Iterate new abi to generate method id's
-    abiArray.map((abi) => {
+    abiArray.map(function (abi) {
       if(abi.name){
         const signature = new Web3().sha3(abi.name + "(" + abi.inputs.map(function(input) {return input.type;}).join(",") + ")");
         if(abi.type == "event"){
@@ -37,7 +37,7 @@ function _removeABI(abiArray) {
   if (Array.isArray(abiArray)) {
 
     // Iterate new abi to generate method id's
-    abiArray.map((abi) => {
+    abiArray.map(function (abi) {
       if(abi.name){
         const signature = new Web3().sha3(abi.name + "(" + abi.inputs.map(function(input) {return input.type;}).join(",") + ")");
         if(abi.type == "event"){
@@ -66,11 +66,11 @@ function _decodeMethod(data) {
   const methodID = data.slice(2, 10);
   const abiItem = state.methodIDs[methodID];
   if (abiItem) {
-    const params = abiItem.inputs.map((item) => item.type);
+    const params = abiItem.inputs.map(function (item) { return item.type; });
     let decoded = SolidityCoder.decodeParams(params, data.slice(10));
     return {
       name: abiItem.name,
-      params: decoded.map((param, index) => {
+      params: decoded.map(function (param, index) {
         let parsedParam = param;
         if (abiItem.inputs[index].type.indexOf("uint") !== -1) {
           parsedParam = new Web3().toBigNumber(param).toString();
@@ -99,7 +99,7 @@ function padZeros (address) {
 };
 
 function _decodeLogs(logs) {
-  return logs.map((logItem) => {
+  return logs.map(function(logItem) {
     const methodID = logItem.topics[0].slice(2);
     const method = state.methodIDs[methodID];
     if (method) {
@@ -110,7 +110,7 @@ function _decodeLogs(logs) {
 
       let dataTypes = [];
       method.inputs.map(
-        (input) => {
+        function (input) {
           if (!input.indexed) {
             dataTypes.push(input.type);
           }
