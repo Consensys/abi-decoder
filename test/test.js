@@ -3,6 +3,7 @@ const abiDecoder = require('../index.js');
 
 // Test Params
 const testABI = [{"inputs": [{"type": "address", "name": ""}], "constant": true, "name": "isInstantiation", "payable": false, "outputs": [{"type": "bool", "name": ""}], "type": "function"}, {"inputs": [{"type": "address[]", "name": "_owners"}, {"type": "uint256", "name": "_required"}, {"type": "uint256", "name": "_dailyLimit"}], "constant": false, "name": "create", "payable": false, "outputs": [{"type": "address", "name": "wallet"}], "type": "function"}, {"inputs": [{"type": "address", "name": ""}, {"type": "uint256", "name": ""}], "constant": true, "name": "instantiations", "payable": false, "outputs": [{"type": "address", "name": ""}], "type": "function"}, {"inputs": [{"type": "address", "name": "creator"}], "constant": true, "name": "getInstantiationCount", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"indexed": false, "type": "address", "name": "sender"}, {"indexed": false, "type": "address", "name": "instantiation"}], "type": "event", "name": "ContractInstantiation", "anonymous": false}];
+const testArrNumbersABI = [{"constant":false,"inputs":[{"name":"n","type":"uint256[]"}],"name":"numbers","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}];
 
 describe('abi decoder', function () {
   it('get abis', () => {
@@ -39,6 +40,22 @@ describe('abi decoder', function () {
     expect(decodedData.params[2].value).to.equal('0');
     expect(decodedData.params[2].name).to.equal('_dailyLimit');
     expect(decodedData.params[2].type).to.equal('uint256');
+  });
+
+  it('decode data with arrays', () => {
+    abiDecoder.addABI(testArrNumbersABI);
+    const testData = "0x3727308100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003";
+    const decodedData = abiDecoder.decodeMethod(testData);  
+    expect(decodedData).to.be.an('object');
+    expect(decodedData).to.have.all.keys('name', 'params');
+    expect(decodedData.name).to.be.a('string');
+    expect(decodedData.params).to.be.a('array');
+    expect(decodedData.params).to.have.length.of(1);
+    expect(decodedData.params[0].value[0]).to.equal('1');
+    expect(decodedData.params[0].value[1]).to.equal('2');
+    expect(decodedData.params[0].value[2]).to.equal('3');
+    expect(decodedData.params[0].name).to.equal('n');
+    expect(decodedData.params[0].type).to.equal('uint256[]');
   });
 
   it('decode logs without indexed', () => {
@@ -91,13 +108,13 @@ describe('abi decoder', function () {
   it('remove ABI', () => {
     let methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an('object');
-    expect(Object.keys(methods)).to.have.length.of(41);
+    expect(Object.keys(methods)).to.have.length.of(42);
 
     abiDecoder.removeABI(testABI);
 
     methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an('object');
-    expect(Object.keys(methods)).to.have.length.of(36);
+    expect(Object.keys(methods)).to.have.length.of(37);
   });
 
 });
