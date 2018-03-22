@@ -107,7 +107,7 @@ function padZeros (address) {
   return "0x" + formatted;
 };
 
-function _decodeLogs(logs) {
+function _decodeLogs(logs, keepBlockNumber) {
   return logs.map(function(logItem) {
     const methodID = logItem.topics[0].slice(2);
     const method = state.methodIDs[methodID];
@@ -152,12 +152,17 @@ function _decodeLogs(logs) {
         decodedParams.push(decodedP);
       });
 
-
-      return {
+      var eventObj = {
         name: method.name,
         events: decodedParams,
         address: logItem.address
       };
+
+      if (keepBlockNumber) {
+        eventObj['blockNumber'] = logItem.blockNumber;
+      }
+
+      return eventObj;
     }
   });
 }
