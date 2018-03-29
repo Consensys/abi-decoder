@@ -107,7 +107,7 @@ function padZeros (address) {
   return "0x" + formatted;
 };
 
-function _decodeLogs(logs, keepBlockNumber) {
+function _decodeLogs(logs, keepBlockNumber, keepTxHash) {
   return logs.map(function(logItem) {
     const methodID = logItem.topics[0].slice(2);
     const method = state.methodIDs[methodID];
@@ -160,6 +160,10 @@ function _decodeLogs(logs, keepBlockNumber) {
 
       if (keepBlockNumber) {
         eventObj['blockNumber'] = logItem.blockNumber;
+      }
+
+      if (keepTxHash) {
+        eventObj['keepTxHash'] = logItem.transactionHash;
       }
 
       return eventObj;
