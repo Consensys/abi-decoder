@@ -10510,7 +10510,7 @@ function _decodeLogs(logs, keepBlockNumber, keepTxHash) {
       }
 
       if (keepTxHash) {
-        eventObj['keepTxHash'] = logItem.transactionHash;
+        eventObj['transactionHash'] = logItem.transactionHash;
       }
 
       return eventObj;
