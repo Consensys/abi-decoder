@@ -1,5 +1,5 @@
 # abi-decoder
-Nodejs and Javascript library for decoding data params and events from etherem transactions
+Nodejs and Javascript library for decoding data params and events from ethereum transactions
 
 # Install
 ```
