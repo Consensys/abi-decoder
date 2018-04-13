@@ -76,13 +76,20 @@ function _decodeMethod(data) {
         const isInt = abiItem.inputs[index].type.indexOf("int") == 0;
 
         if (isUint || isInt) {
-          const isArray = Array.isArray(param);
-
-          if (isArray) {
-            parsedParam = param.map(val => new Web3().toBigNumber(val).toString());
-          } else {
-            parsedParam = new Web3().toBigNumber(param).toString();
-          }
+		  parsedParam = parseArrayNumber(param);
+			
+		  function parseArrayNumber (param2) {
+		    let parsedParam2 = param2;
+			const isArray = Array.isArray(param2);
+			
+			if (isArray) {
+			  parsedParam2 = param2.map(val => parseArrayNumber(val));
+			} else {
+			  parsedParam2 = new Web3().toBigNumber(param2).toString();
+			}
+			return parsedParam2;
+		  }
+		  
         }
         return {
           name: abiItem.inputs[index].name,
