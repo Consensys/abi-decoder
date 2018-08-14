@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test",
-    "dist": "webpack"
+    "dist": "parcel build index.js --out-file dist/abi-decoder.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,6 @@
     "babel-preset-es2015": "^6.22.0",
     "chai": "^3.5.0",
     "mocha": "^4.0.0",
-    "webpack": "^2.7.0"
+    "parcel-bundler": "^1.9.7"
   }
 }
