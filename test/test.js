@@ -1,8 +1,12 @@
 const expect = require('chai').expect;
-const abiDecoder = require('../index.js');
+const AbiDecoder = require('../index.js');
+const abiDecoder = AbiDecoder();
 
 // Test Params
 const testABI = [{"inputs": [{"type": "address", "name": ""}], "constant": true, "name": "isInstantiation", "payable": false, "outputs": [{"type": "bool", "name": ""}], "type": "function"}, {"inputs": [{"type": "address[]", "name": "_owners"}, {"type": "uint256", "name": "_required"}, {"type": "uint256", "name": "_dailyLimit"}], "constant": false, "name": "create", "payable": false, "outputs": [{"type": "address", "name": "wallet"}], "type": "function"}, {"inputs": [{"type": "address", "name": ""}, {"type": "uint256", "name": ""}], "constant": true, "name": "instantiations", "payable": false, "outputs": [{"type": "address", "name": ""}], "type": "function"}, {"inputs": [{"type": "address", "name": "creator"}], "constant": true, "name": "getInstantiationCount", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"indexed": false, "type": "address", "name": "sender"}, {"indexed": false, "type": "address", "name": "instantiation"}], "type": "event", "name": "ContractInstantiation", "anonymous": false}];
+
+const testABI2 = [{"inputs": [{"type": "address[]", "name": "_owners"}, {"type": "uint256", "name": "_required"}, {"type": "uint256", "name": "_dailyLimit"}], "constant": false, "name": "create", "payable": false, "outputs": [{"type": "address", "name": "wallet"}], "type": "function"}, {"inputs": [{"type": "address", "name": "creator"}], "constant": true, "name": "getInstantiationCount", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"indexed": false, "type": "address", "name": "sender"}, {"indexed": false, "type": "address", "name": "instantiation"}], "type": "event", "name": "ContractInstantiation", "anonymous": false}];
+
 const testArrNumbersABI = [{"constant":false,"inputs":[{"name":"n","type":"uint256[]"}],"name":"numbers","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}];
 
 describe('abi decoder', function () {
@@ -22,6 +26,17 @@ describe('abi decoder', function () {
     expect(Object.keys(methodIDs)).to.have.length.of(5);
   });
 
+  it('add second abi', () => {
+    const ad = AbiDecoder()
+    ad.addABI(testABI2);
+    const abis = ad.getABIs();
+    expect(abis).to.be.an('array');
+    expect(abis).to.have.length.of(3);
+    const methodIDs = ad.getMethodIDs();
+    expect(methodIDs).to.be.an('object');
+    expect(Object.keys(methodIDs)).to.have.length.of(3);
+  });
+
   it('decode data', () => {
     abiDecoder.addABI(testABI);
     const testData = "0x53d9d9100000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000a6d9c5f7d4de3cef51ad3b7235d79ccc95114de5000000000000000000000000a6d9c5f7d4de3cef51ad3b7235d79ccc95114daa";
@@ -31,7 +46,7 @@ describe('abi decoder', function () {
     expect(decodedData.name).to.be.a('string');
     expect(decodedData.params).to.be.a('array');
     expect(decodedData.params).to.have.length.of(3);
-    expect(decodedData.params[0].value).to.deep.equal(['0xa6d9c5f7d4de3cef51ad3b7235d79ccc95114de5', '0xa6d9c5f7d4de3cef51ad3b7235d79ccc95114daa']);
+    expect(decodedData.params[0].value).to.deep.equal(['0xa6D9C5F7D4de3CEF51aD3b7235D79cCC95114de5','0xa6D9C5f7d4De3cEF51AD3b7235d79cCC95114DAa']);
     expect(decodedData.params[0].name).to.equal('_owners');
     expect(decodedData.params[0].type).to.equal('address[]');
     expect(decodedData.params[1].value).to.equal('1');
@@ -56,6 +71,35 @@ describe('abi decoder', function () {
     expect(decodedData.params[0].value[2]).to.equal('3');
     expect(decodedData.params[0].name).to.equal('n');
     expect(decodedData.params[0].type).to.equal('uint256[]');
+  });
+
+  it('should decode a full log', () => {
+    const aLog = [{
+      data: '0x00000000000000000000000065039084cc6f4773291a6ed7dcf5bc3a2e894ff3000000000000000000000000435a4167bc34107bd03e267f9d6b869255151a27',
+      topics: ['0x4fb057ad4a26ed17a57957fa69c306f11987596069b89521c511fc9a894e6161'],
+      logIndex: 0,
+      transactionIndex: 0,
+      transactionHash: '0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385',
+      blockHash: '0xfd43ade1c09fade1c0d57a7af66ab4ead7c2c2eb7b11a91ffdd57a7af66ab4ead7',
+      blockNumber: 1234,
+      address: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe'
+    }];
+    const decodedLogs = abiDecoder.decodeLogs(aLog);
+    expect(decodedLogs).to.deep.equal([{
+      "name": "ContractInstantiation",
+      "events": [{
+        "name": "sender",
+        "type": "address",
+        "value": "0x65039084cc6f4773291a6ed7dcf5bc3a2e894ff3"
+      }, {
+        "name": "instantiation",
+        "type": "address",
+        "value": "0x435a4167bc34107bd03e267f9d6b869255151a27"
+      }],
+      "address": "0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe",
+      "blockNumber": 1234,
+      "transactionHash": "0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385"
+    }]);
   });
 
   it('decode logs without indexed', () => {
