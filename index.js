@@ -76,7 +76,7 @@ class AbiDecoder {
     }
   }
   decodeLogs(logs) {
-    return logs.map(({topics, data, address}) => {
+    return logs.map(({topics, data, address, blockNumber, transactionHash}) => {
       const methodID = topics[0].slice(2);
       const method = this.methodIDs[methodID];
       if (!method) return;
@@ -110,8 +110,8 @@ class AbiDecoder {
 
         return event;
       });
-
-      return { name: method.name, events, address };
+      // console.log(JSON.stringify({ name: method.name, events, address, blockNumber, transactionHash },null,2));
+      return { name: method.name, events, address, blockNumber, transactionHash };
     });    
   }
 }

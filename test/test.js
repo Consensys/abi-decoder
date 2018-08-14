@@ -73,6 +73,35 @@ describe('abi decoder', function () {
     expect(decodedData.params[0].type).to.equal('uint256[]');
   });
 
+  it('should decode a full log', () => {
+    const aLog = [{
+      data: '0x00000000000000000000000065039084cc6f4773291a6ed7dcf5bc3a2e894ff3000000000000000000000000435a4167bc34107bd03e267f9d6b869255151a27',
+      topics: ['0x4fb057ad4a26ed17a57957fa69c306f11987596069b89521c511fc9a894e6161'],
+      logIndex: 0,
+      transactionIndex: 0,
+      transactionHash: '0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385',
+      blockHash: '0xfd43ade1c09fade1c0d57a7af66ab4ead7c2c2eb7b11a91ffdd57a7af66ab4ead7',
+      blockNumber: 1234,
+      address: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe'
+    }];
+    const decodedLogs = abiDecoder.decodeLogs(aLog);
+    expect(decodedLogs).to.deep.equal([{
+      "name": "ContractInstantiation",
+      "events": [{
+        "name": "sender",
+        "type": "address",
+        "value": "0x65039084cc6f4773291a6ed7dcf5bc3a2e894ff3"
+      }, {
+        "name": "instantiation",
+        "type": "address",
+        "value": "0x435a4167bc34107bd03e267f9d6b869255151a27"
+      }],
+      "address": "0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe",
+      "blockNumber": 1234,
+      "transactionHash": "0x7f9fade1c0d57a7af66ab4ead79fade1c0d57a7af66ab4ead7c2c2eb7b11a91385"
+    }]);
+  });
+
   it('decode logs without indexed', () => {
     const testLogs = [
       {
