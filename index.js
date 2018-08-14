@@ -16,6 +16,7 @@ class AbiDecoder {
     this.savedABIs = [];
     this.methodIDs = {};
   }
+  instance() { return new AbiDecoder(); }
   getABIs() { return this.savedABIs; }
   getMethodIDs() { return this.methodIDs; }
   addABI(abiArray) {
@@ -116,4 +117,4 @@ class AbiDecoder {
   }
 }
 
-module.exports = () => { return new AbiDecoder(); }
+module.exports = new AbiDecoder();
