@@ -2,6 +2,8 @@ const Web3 = require('web3');
 const { utils, eth } = new Web3();
 const { sha3, toBN } = utils;
 
+const onTrue = f => !!f
+
 function padZeros (address) {
   let formatted = address;
   if (address.indexOf('0x') != -1) formatted = address.slice(2);
@@ -74,52 +76,42 @@ class AbiDecoder {
     }
   }
   decodeLogs(logs) {
-    return logs.map((logItem) => {
-      const methodID = logItem.topics[0].slice(2);
+    return logs.map(({topics, data, address}) => {
+      const methodID = topics[0].slice(2);
       const method = this.methodIDs[methodID];
-      if (method) {
-        const logData = logItem.data;
-        let decodedParams = [];
-        let dataIndex = 0;
-        let topicsIndex = 1;
-  
-        let dataTypes = [];
-        method.inputs.map(function (input) {
-          if (!input.indexed) dataTypes.push(input.type);
-        });
-        const decodedData = eth.abi.decodeParameters(dataTypes, logData.slice(2));
+      if (!method) return;
+      
+      const dataTypes = method.inputs.map(function (input) {
+        return !input.indexed ? input.type : false;
+      }).filter(onTrue);
+      const decodedData = eth.abi.decodeParameters(dataTypes, data.slice(2));
 
-        method.inputs.map(function (param) {
-          let decodedP = {
-            name: param.name,
-            type: param.type
-          };
-  
-          if (param.indexed) {
-            decodedP.value = logItem.topics[topicsIndex];
-            topicsIndex++;
-          }
-          else {
-            decodedP.value = decodedData[dataIndex];
-            dataIndex++;
-          }
-  
-          if (param.type == "address"){
-            decodedP.value = padZeros(toBN(decodedP.value).toString(16));
-          }
-          else if(param.type == "uint256" || param.type == "uint8" || param.type == "int" ){
-            decodedP.value = toBN(decodedP.value).toString(10);
-          }
-  
-          decodedParams.push(decodedP);
-        });
-  
-        return {
-          name: method.name,
-          events: decodedParams,
-          address: logItem.address
+      let dataIndex = 0;
+      let topicsIndex = 1;
+      const events = method.inputs.map(function (param) {
+        const event = {
+          name: param.name,
+          type: param.type
         };
-      }
+
+        if (param.indexed) {
+          event.value = topics[topicsIndex];
+          topicsIndex++;
+        } else {
+          event.value = decodedData[dataIndex];
+          dataIndex++;
+        }
+
+        if (param.type == "address") {
+          event.value = padZeros(toBN(event.value).toString(16));
+        } else if (param.type == "uint256" || param.type == "uint8" || param.type == "int" ) {
+          event.value = toBN(event.value).toString(10);
+        }
+
+        return event;
+      });
+
+      return { name: method.name, events, address };
     });    
   }
 }
