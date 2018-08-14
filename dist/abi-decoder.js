@@ -26364,7 +26364,9 @@ var AbiDecoder = function () {
       return logs.map(function (_ref2) {
         var topics = _ref2.topics,
             data = _ref2.data,
-            address = _ref2.address;
+            address = _ref2.address,
+            blockNumber = _ref2.blockNumber,
+            transactionHash = _ref2.transactionHash;
 
         var methodID = topics[0].slice(2);
         var method = _this3.methodIDs[methodID];
@@ -26399,8 +26401,8 @@ var AbiDecoder = function () {
 
           return event;
         });
-
-        return { name: method.name, events: events, address: address };
+        // console.log(JSON.stringify({ name: method.name, events, address, blockNumber, transactionHash },null,2));
+        return { name: method.name, events: events, address: address, blockNumber: blockNumber, transactionHash: transactionHash };
       });
     }
   }]);
