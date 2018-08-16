@@ -17,12 +17,8 @@ function _addABI(abiArray) {
     abiArray.map(function (abi) {
       if(abi.name){
         const signature = new Web3().sha3(abi.name + "(" + abi.inputs.map(function(input) {return input.type;}).join(",") + ")");
-        if(abi.type == "event"){
-          state.methodIDs[signature.slice(2)] = abi;
-        }
-        else{
-          state.methodIDs[signature.slice(2, 10)] = abi;
-        }
+        // methodID is only 4 byte
+        state.methodIDs[signature.slice(2, 10)] = abi;
       }
     });
 
