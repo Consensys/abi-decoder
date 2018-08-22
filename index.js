@@ -105,7 +105,7 @@ function padZeros (address) {
 
 function _decodeLogs(logs) {
   return logs.map(function(logItem) {
-    const methodID = logItem.topics[0].slice(2);
+    const methodID = logItem.topics[0].slice(2, 10);
     const method = state.methodIDs[methodID];
     if (method) {
       const logData = logItem.data;
