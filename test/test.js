@@ -31,7 +31,7 @@ describe('abi decoder', function () {
     expect(decodedData.name).to.be.a('string');
     expect(decodedData.params).to.be.a('array');
     expect(decodedData.params).to.have.length.of(3);
-    expect(decodedData.params[0].value).to.deep.equal(['0xa6d9c5f7d4de3cef51ad3b7235d79ccc95114de5', '0xa6d9c5f7d4de3cef51ad3b7235d79ccc95114daa']);
+    expect(decodedData.params[0].value).to.deep.equal(['0xa6D9C5F7D4de3CEF51aD3b7235D79cCC95114de5','0xa6D9C5f7d4De3cEF51AD3b7235d79cCC95114DAa']);
     expect(decodedData.params[0].name).to.equal('_owners');
     expect(decodedData.params[0].type).to.equal('address[]');
     expect(decodedData.params[1].value).to.equal('1');
@@ -45,7 +45,7 @@ describe('abi decoder', function () {
   it('decode data with arrays', () => {
     abiDecoder.addABI(testArrNumbersABI);
     const testData = "0x3727308100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003";
-    const decodedData = abiDecoder.decodeMethod(testData);  
+    const decodedData = abiDecoder.decodeMethod(testData);
     expect(decodedData).to.be.an('object');
     expect(decodedData).to.have.all.keys('name', 'params');
     expect(decodedData.name).to.be.a('string');
