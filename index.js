@@ -1,5 +1,7 @@
-const SolidityCoder = require("web3/lib/solidity/coder.js");
-const Web3 = require('web3');
+import Web3 from 'web3';
+let web3 = new Web3();
+let sha3 = web3.utils.sha3;
+let BN = web3.utils.BN;
 
 const state = {
   savedABIs : [],
@@ -16,7 +18,7 @@ function _addABI(abiArray) {
     // Iterate new abi to generate method id's
     abiArray.map(function (abi) {
       if(abi.name){
-        const signature = new Web3().sha3(abi.name + "(" + abi.inputs.map(function(input) {return input.type;}).join(",") + ")");
+        const signature = sha3(abi.name + "(" + abi.inputs.map(function(input) {return input.type;}).join(",") + ")");
         if(abi.type == "event"){
           state.methodIDs[signature.slice(2)] = abi;
         }
@@ -39,7 +41,7 @@ function _removeABI(abiArray) {
     // Iterate new abi to generate method id's
     abiArray.map(function (abi) {
       if(abi.name){
-        const signature = new Web3().sha3(abi.name + "(" + abi.inputs.map(function(input) {return input.type;}).join(",") + ")");
+        const signature = sha3(abi.name + "(" + abi.inputs.map(function(input) {return input.type;}).join(",") + ")");
         if(abi.type == "event"){
           if (state.methodIDs[signature.slice(2)]) {
             delete state.methodIDs[signature.slice(2)];
@@ -79,9 +81,9 @@ function _decodeMethod(data) {
           const isArray = Array.isArray(param);
 
           if (isArray) {
-            parsedParam = param.map(val => new Web3().toBigNumber(val).toString());
+            parsedParam = param.map(val => new BN(val).toString());
           } else {
-            parsedParam = new Web3().toBigNumber(param).toString();
+            parsedParam = new BN(param).toString();
           }
         }
         return {
@@ -143,10 +145,10 @@ function _decodeLogs(logs) {
         }
 
         if (param.type == "address"){
-          decodedP.value = padZeros(new Web3().toBigNumber(decodedP.value).toString(16));
+          decodedP.value = padZeros(new BN(decodedP.value).toString(16));
         }
         else if(param.type == "uint256" || param.type == "uint8" || param.type == "int" ){
-          decodedP.value = new Web3().toBigNumber(decodedP.value).toString(10);
+          decodedP.value = new BN(decodedP.value).toString(10);
         }
 
         decodedParams.push(decodedP);
@@ -162,7 +164,7 @@ function _decodeLogs(logs) {
   });
 }
 
-module.exports = {
+export default {
   getABIs: _getABIs,
   addABI: _addABI,
   getMethodIDs: _getMethodIDs,
