@@ -1,8 +1,9 @@
 {
   "name": "abi-decoder",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Nodejs and Javascript library for decoding data params and events from ethereum transactions\"",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "mocha test",
     "dist": "webpack"
@@ -23,6 +24,7 @@
   },
   "homepage": "https://github.com/ConsenSys/abi-decoder#readme",
   "dependencies": {
+    "ethereum-types": "^2.1.2",
     "web3": "^0.18.4"
   },
   "devDependencies": {
