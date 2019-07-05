@@ -9,17 +9,17 @@ describe("abi decoder", function () {
   it("get abis", () => {
     const abis = abiDecoder.getABIs();
     expect(abis).to.be.an("array");
-    expect(abis).to.have.length.of(0);
+    expect(abis).to.have.length(0);
   });
 
   it("add abis", () => {
     abiDecoder.addABI(testABI);
     const abis = abiDecoder.getABIs();
     expect(abis).to.be.an("array");
-    expect(abis).to.have.length.of(5);
+    expect(abis).to.have.length(5);
     const methodIDs = abiDecoder.getMethodIDs();
     expect(methodIDs).to.be.an("object");
-    expect(Object.keys(methodIDs)).to.have.length.of(5);
+    expect(Object.keys(methodIDs)).to.have.length(5);
   });
 
   it("decode data", () => {
@@ -30,7 +30,7 @@ describe("abi decoder", function () {
     expect(decodedData).to.have.all.keys("name", "params");
     expect(decodedData.name).to.be.a("string");
     expect(decodedData.params).to.be.a("array");
-    expect(decodedData.params).to.have.length.of(3);
+    expect(decodedData.params).to.have.length(3);
     expect(decodedData.params[0].value).to.deep.equal(["0xa6d9c5f7d4de3cef51ad3b7235d79ccc95114de5", "0xa6d9c5f7d4de3cef51ad3b7235d79ccc95114daa"]);
     expect(decodedData.params[0].name).to.equal("_owners");
     expect(decodedData.params[0].type).to.equal("address[]");
@@ -50,7 +50,7 @@ describe("abi decoder", function () {
     expect(decodedData).to.have.all.keys("name", "params");
     expect(decodedData.name).to.be.a("string");
     expect(decodedData.params).to.be.a("array");
-    expect(decodedData.params).to.have.length.of(1);
+    expect(decodedData.params).to.have.length(1);
     expect(decodedData.params[0].value[0]).to.equal("1");
     expect(decodedData.params[0].value[1]).to.equal("2");
     expect(decodedData.params[0].value[2]).to.equal("3");
@@ -108,13 +108,13 @@ describe("abi decoder", function () {
   it("remove ABI", () => {
     let methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length.of(42);
+    expect(Object.keys(methods)).to.have.length(42);
 
     abiDecoder.removeABI(testABI);
 
     methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length.of(37);
+    expect(Object.keys(methods)).to.have.length(37);
   });
 
 });

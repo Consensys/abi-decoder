@@ -197,7 +197,7 @@ function _decodeLogs(logs) {
   });
 }
 
-export default {
+module.exports = {
   getABIs: _getABIs,
   addABI: _addABI,
   getMethodIDs: _getMethodIDs,
