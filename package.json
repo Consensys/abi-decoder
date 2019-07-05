@@ -4,7 +4,7 @@
   "description": "Nodejs and Javascript library for decoding data params and events from ethereum transactions\"",
   "main": "index.js",
   "scripts": {
-    "pretest": "eslint --ignore-path .gitignore .",
+    "pretest": "eslint --ignore-path .eslintignore .",
     "test": "mocha test",
     "dist": "webpack"
   },
