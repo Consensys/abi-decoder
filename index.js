@@ -1,10 +1,10 @@
 const SolidityCoder = require("web3/lib/solidity/coder.js");
-const Web3 = require('web3');
+const Web3 = require("web3");
 
 const state = {
   savedABIs : [],
   methodIDs: {}
-}
+};
 
 function _getABIs() {
   return state.savedABIs;
@@ -90,13 +90,13 @@ function _decodeMethod(data) {
           type: abiItem.inputs[index].type
         };
       })
-    }
+    };
   }
 }
 
 function padZeros (address) {
   var formatted = address;
-  if (address.indexOf('0x') != -1) {
+  if (address.indexOf("0x") != -1) {
     formatted = address.slice(2);
   }
 
@@ -105,7 +105,7 @@ function padZeros (address) {
   }
 
   return "0x" + formatted;
-};
+}
 
 function _decodeLogs(logs) {
   return logs.filter(log => log.topics.length > 0).map((logItem) => {

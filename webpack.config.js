@@ -1,20 +1,20 @@
 module.exports = {
-  entry: './index.js',
+  entry: "./index.js",
   output: {
-    filename: './dist/abi-decoder.js',
-    libraryTarget: 'var',
-    library: 'abiDecoder',
+    filename: "./dist/abi-decoder.js",
+    libraryTarget: "var",
+    library: "abiDecoder",
   },
   module: {
     loaders: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        loader: "babel-loader",
       },
       {
         test: /\.json$/,
-        loader: 'json-loader',
+        loader: "json-loader",
       },
     ],
   },
