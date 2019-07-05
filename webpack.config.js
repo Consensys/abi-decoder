@@ -1,20 +1,17 @@
 module.exports = {
+  mode: "production",
   entry: "./index.js",
   output: {
-    filename: "./dist/abi-decoder.js",
+    filename: "abi-decoder.js",
     libraryTarget: "var",
     library: "abiDecoder",
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: "babel-loader",
-      },
-      {
-        test: /\.json$/,
-        loader: "json-loader",
       },
     ],
   },
