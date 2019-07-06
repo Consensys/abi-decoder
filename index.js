@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+const Web3 = require('web3');
 let web3 = new Web3();
 let sha3 = web3.utils.sha3;
 let BN = web3.utils.BN;
@@ -197,7 +197,7 @@ function _decodeLogs(logs) {
   });
 }
 
-export default {
+module.exports = {
   getABIs: _getABIs,
   addABI: _addABI,
   getMethodIDs: _getMethodIDs,
