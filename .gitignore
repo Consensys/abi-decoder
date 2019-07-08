@@ -38,3 +38,6 @@ jspm_packages
 
 # Visual Studio Code
 .vscode
+
+# dist no loger needed in git, bower was deprecated
+dist
