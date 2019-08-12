@@ -1,7 +1,5 @@
-const Web3 = require("web3");
-let web3 = new Web3();
-let sha3 = web3.utils.sha3;
-let BN = web3.utils.BN;
+const { sha3, BN } = require("web3-utils");
+const abiCoder = require("web3-eth-abi");
 
 const state = {
   savedABIs: [],
@@ -83,7 +81,7 @@ function _decodeMethod(data) {
     const params = abiItem.inputs.map(function(item) {
       return item.type;
     });
-    let decoded = web3.eth.abi.decodeParameters(params, data.slice(10));
+    let decoded = abiCoder.decodeParameters(params, data.slice(10));
 
     let retData = {
       name: abiItem.name,
@@ -146,7 +144,7 @@ function _decodeLogs(logs) {
         }
       });
 
-      const decodedData = web3.eth.abi.decodeParameters(
+      const decodedData = abiCoder.decodeParameters(
         dataTypes,
         logData.slice(2)
       );

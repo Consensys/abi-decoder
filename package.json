@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/ConsenSys/abi-decoder#readme",
   "dependencies": {
-    "web3": "^1.2.1"
+    "web3-eth-abi": "^1.2.1",
+    "web3-utils": "^1.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
