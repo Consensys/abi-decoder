@@ -105,16 +105,48 @@ describe("abi decoder", function () {
     expect(decodedLogs[0].events[1].type).to.equal("uint256");
   });
 
+  it("decode logs with indexed param and uint value", () => {
+    const testABI = [{"anonymous":false,"inputs":[{"indexed":true,"name":"voter","type":"address"},{"indexed":true,"name":"pollId","type":"uint256"},{"indexed":true,"name":"optionId","type":"uint256"}],"name":"Voted","type":"event"}];
+    abiDecoder.addABI(testABI);
+    const testLogs = [
+      {
+        data: "0x",
+        "topics": [
+          "0xea66f58e474bc09f580000e81f31b334d171db387d0c6098ba47bd897741679b",
+          "0x00000000000000000000000014341f81df14ca86e1420ec9e6abd343fb1c5bfc",
+          "0x0000000000000000000000000000000000000000000000000000000000000022",
+          "0x0000000000000000000000000000000000000000000000000000000000000001"
+        ],
+        address: "0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D"
+      }
+    ];
+    const decodedLogs = abiDecoder.decodeLogs(testLogs);
+    expect(decodedLogs).to.be.an("array");
+    expect(decodedLogs).to.have.length(1);
+    expect(decodedLogs[0].name).to.equal("Voted");
+    expect(decodedLogs[0].events).to.have.length(3);
+    expect(decodedLogs[0].address).to.equal("0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D");
+    expect(decodedLogs[0].events[0].name).to.equal("voter");
+    expect(decodedLogs[0].events[0].type).to.equal("address");
+    expect(decodedLogs[0].events[0].value).to.equal("0x14341f81df14ca86e1420ec9e6abd343fb1c5bfc");
+    expect(decodedLogs[0].events[1].name).to.equal("pollId");
+    expect(decodedLogs[0].events[1].value).to.equal("22");
+    expect(decodedLogs[0].events[1].type).to.equal("uint256");
+    expect(decodedLogs[0].events[2].name).to.equal("optionId");
+    expect(decodedLogs[0].events[2].value).to.equal("1");
+    expect(decodedLogs[0].events[2].type).to.equal("uint256");
+  });
+
   it("remove ABI", () => {
     let methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length(42);
+    expect(Object.keys(methods)).to.have.length(43);
 
     abiDecoder.removeABI(testABI);
 
     methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length(37);
+    expect(Object.keys(methods)).to.have.length(38);
   });
 
 });

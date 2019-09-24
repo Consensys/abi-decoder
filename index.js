@@ -180,7 +180,14 @@ function _decodeLogs(logs) {
           param.type === "uint8" ||
           param.type === "int"
         ) {
-          decodedP.value = new BN(decodedP.value).toString(10);
+          // ensure to remove leading 0x for hex numbers
+          if (typeof decodedP.value === "string" && decodedP.value.startsWith("0x")) {
+            decodedP.value = new BN(decodedP.value.slice(2)).toString(10);
+          }
+          else{
+            decodedP.value = new BN(decodedP.value).toString(10);
+          }
+          
         }
 
         decodedParams.push(decodedP);
