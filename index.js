@@ -26,7 +26,10 @@ function _addABI(abiArray) {
             ")"
         );
         if (abi.type === "event") {
-          state.methodIDs[signature.slice(2)] = abi;
+          if(!state.methodIDs[signature.slice(2)]){
+            state.methodIDs[signature.slice(2)] = [];
+          }
+          state.methodIDs[signature.slice(2)].push(abi);
         } else {
           state.methodIDs[signature.slice(2, 10)] = abi;
         }
@@ -130,75 +133,84 @@ function _decodeMethod(data) {
 function _decodeLogs(logs) {
   return logs.filter(log => log.topics.length > 0).map((logItem) => {
     const methodID = logItem.topics[0].slice(2);
-    const method = state.methodIDs[methodID];
-    if (method) {
-      const logData = logItem.data;
-      let decodedParams = [];
-      let dataIndex = 0;
-      let topicsIndex = 1;
-
-      let dataTypes = [];
-      method.inputs.map(function(input) {
-        if (!input.indexed) {
-          dataTypes.push(input.type);
-        }
-      });
-
-      const decodedData = abiCoder.decodeParameters(
-        dataTypes,
-        logData.slice(2)
-      );
-
-      // Loop topic and data to get the params
-      method.inputs.map(function(param) {
-        let decodedP = {
-          name: param.name,
-          type: param.type,
-        };
-
-        if (param.indexed) {
-          decodedP.value = logItem.topics[topicsIndex];
-          topicsIndex++;
-        } else {
-          decodedP.value = decodedData[dataIndex];
-          dataIndex++;
-        }
-
-        if (param.type === "address") {
-          decodedP.value = decodedP.value.toLowerCase();
-          // 42 because len(0x) + 40
-          if (decodedP.value.length > 42) {
-            let toRemove = decodedP.value.length - 42;
-            let temp = decodedP.value.split("");
-            temp.splice(2, toRemove);
-            decodedP.value = temp.join("");
-          }
-        }
-
-        if (
-          param.type === "uint256" ||
-          param.type === "uint8" ||
-          param.type === "int"
-        ) {
-          // ensure to remove leading 0x for hex numbers
-          if (typeof decodedP.value === "string" && decodedP.value.startsWith("0x")) {
-            decodedP.value = new BN(decodedP.value.slice(2), 16).toString(10);
-          } else {
-            decodedP.value = new BN(decodedP.value).toString(10);
-          }
-          
-        }
-
-        decodedParams.push(decodedP);
-      });
-
-      return {
-        name: method.name,
-        events: decodedParams,
-        address: logItem.address,
-      };
+    const methods = state.methodIDs[methodID];
+    if (methods) {
+      return methods.map(method=>tryDecodeLogs(method, logItem)).filter(data=>data!==null)[0];
     }
   });
+}
+
+function tryDecodeLogs(method, logItem){
+  try {
+    const logData = logItem.data;
+    let decodedParams = [];
+    let dataIndex = 0;
+    let topicsIndex = 1;
+
+    let dataTypes = [];
+    method.inputs.map(function(input) {
+      if (!input.indexed) {
+        dataTypes.push(input.type);
+      }
+    });
+
+    const decodedData = abiCoder.decodeParameters(
+      dataTypes,
+      logData.slice(2)
+    );
+
+    // Loop topic and data to get the params
+    method.inputs.map(function(param) {
+      let decodedP = {
+        name: param.name,
+        type: param.type,
+      };
+
+      if (param.indexed) {
+        decodedP.value = logItem.topics[topicsIndex];
+        topicsIndex++;
+      } else {
+        decodedP.value = decodedData[dataIndex];
+        dataIndex++;
+      }
+
+      if (param.type === "address") {
+        decodedP.value = decodedP.value.toLowerCase();
+        // 42 because len(0x) + 40
+        if (decodedP.value.length > 42) {
+          let toRemove = decodedP.value.length - 42;
+          let temp = decodedP.value.split("");
+          temp.splice(2, toRemove);
+          decodedP.value = temp.join("");
+        }
+      }
+
+      if (
+        param.type === "uint256" ||
+        param.type === "uint8" ||
+        param.type === "int"
+      ) {
+        // ensure to remove leading 0x for hex numbers
+        if (typeof decodedP.value === "string" && decodedP.value.startsWith("0x")) {
+          decodedP.value = new BN(decodedP.value.slice(2), 16).toString(10);
+        } else {
+          decodedP.value = new BN(decodedP.value).toString(10);
+        }
+        
+      }
+
+      decodedParams.push(decodedP);
+    });
+
+    return {
+      name: method.name,
+      events: decodedParams,
+      address: logItem.address,
+    };
+  }
+  catch(err){
+    return null;
+  }
 }
 
 module.exports = {
