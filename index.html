@@ -1,0 +1,88 @@
+<html>
+	<head>
+		<script src="bower_components/abi-decoder/dist/abi-decoder.js" ></script>
+		<style>
+			.padding-tab {padding-left: 40px;}
+			.json-name {color: navy;}
+			.code {font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;}
+			#decodedData{
+				background: lightgray;
+				padding: 10px;
+				font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+				width:79%;
+			}
+		</style>
+	</head>
+	<body>
+    	<h1 />abi-decoder</h1>
+		<p>
+			Nodejs and Javascript library for decoding data params and events from etherem transactions
+		</p>
+		<h1>
+			Decode Tx data
+		</h1>
+		<div>
+			<h2>
+				ABI:
+			</h2>
+			<div>
+				<textarea id="abi"  style="width:80%;height:30%"></textarea>
+			</div>
+		</div>
+		<div>
+			<h2>
+				Tx data:
+			</h2>
+			<div>
+				<textarea id="txData" style="width:80%;"></textarea>
+			</div>
+		</div>
+		</br>
+		
+		<input type="button" value="Decode Tx data" onclick='decodeTransaction(); false'/>
+		</br>
+		</br>
+		<div id="decodedData">
+			Decoded Tx Data
+		</div>
+
+		<br />
+		<h1>Decode Logs from Tx Receipt</h1>
+		<p>To decode from Tx Receipt, Include Web3 and excute:
+		<div class=code>
+			var txReceipt = "0x9199e262aaab0a6ec99558b3e9f42397c07a2bb9c6befb637643aebfb03cc32a";
+			<br />
+			web3.eth.getTransactionReceipt(txReceipt, function(e, receipt) {
+				<div class=padding-tab>const decodedLogs = abiDecoder.decodeLogs(receipt.logs);</div>	
+			  });
+			</div>
+		</p>
+		</div>
+		<hr />
+		<p>
+			For more information check ABI Decoder: <a href="https://github.com/ConsenSys/abi-decoder/blob/master/README.md" target="blank">https://github.com/ConsenSys/abi-decoder/blob/master/README.md</a>
+		</p>
+		<script>
+		function decodeTransaction(){
+			var abi = JSON.parse(document.getElementById("abi").value);
+			abiDecoder.addABI(abi);
+			var txData = document.getElementById("txData").value;
+			var decodedData = abiDecoder.decodeMethod(txData);
+
+			var decodedDataText = JSON.stringify(decodedData);
+
+			//Fast Json beautification:
+			decodedDataHtml = decodedDataText.replace(/,\"/g,',<br />"')
+			decodedDataHtml = decodedDataHtml.replace(/:/g,': ')
+			decodedDataHtml = decodedDataHtml.replace(/([\{\[])/g,'$1<div class=padding-tab>')
+			decodedDataHtml = decodedDataHtml.replace(/([\}\]])/g,'</div>$1')
+			decodedDataHtml = decodedDataHtml.replace(/\"([^\".]*?)\":/g,'"<span class=json-name>$1</span>":')
+			//if more lines are welcomed:
+			//decodedDataHtml = decodedDataHtml.replace(/\},\{/g,'<br />} ,<br />{')
+			//decodedDataHtml = decodedDataHtml.replace(/\[/g,'<br />[')
+
+			document.getElementById("decodedData").innerHTML = decodedDataHtml;
+		}
+	</script>
+	</body>
+</html>
