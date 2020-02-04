@@ -10,7 +10,15 @@ function _getABIs() {
   return state.savedABIs;
 }
 
+function _typeToString(input) {
+  if (input.type === "tuple") {
+    return "(" + input.components.map(_typeToString).join(",") + ")";
+  }
+  return input.type;
+}
+
 function _addABI(abiArray) {
+
   if (Array.isArray(abiArray)) {
     // Iterate new abi to generate method id"s
     abiArray.map(function(abi) {
@@ -19,9 +27,7 @@ function _addABI(abiArray) {
           abi.name +
             "(" +
             abi.inputs
-              .map(function(input) {
-                return input.type;
-              })
+              .map(_typeToString)
               .join(",") +
             ")"
         );
@@ -78,10 +84,7 @@ function _decodeMethod(data) {
   const methodID = data.slice(2, 10);
   const abiItem = state.methodIDs[methodID];
   if (abiItem) {
-    const params = abiItem.inputs.map(function(item) {
-      return item.type;
-    });
-    let decoded = abiCoder.decodeParameters(params, data.slice(10));
+    let decoded = abiCoder.decodeParameters(abiItem.inputs, data.slice(10));
 
     let retData = {
       name: abiItem.name,
@@ -186,7 +189,7 @@ function _decodeLogs(logs) {
           } else {
             decodedP.value = new BN(decodedP.value).toString(10);
           }
-          
+
         }
 
         decodedParams.push(decodedP);
