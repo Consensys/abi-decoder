@@ -113,7 +113,14 @@ function _decodeMethod(data) {
         const isArray = Array.isArray(param);
 
         if (isArray) {
-          parsedParam = param.map(_ => _.toLowerCase());
+          //handle cases when the param is a multidimensional array
+          if(param.constructor === Array) {
+            param.forEach((prm) => {
+              parsedParam.push(prm.map(_ => _.toLowerCase()));
+            });
+          } else {
+            parsedParam = param.map(_ => _.toLowerCase());
+          }
         } else {
           parsedParam = param.toLowerCase();
         }
