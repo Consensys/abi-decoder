@@ -2,9 +2,160 @@ const expect = require("chai").expect;
 const abiDecoder = require("../index.js");
 
 // Test Params
-const testABI = [{"inputs": [{"type": "address", "name": ""}], "constant": true, "name": "isInstantiation", "payable": false, "outputs": [{"type": "bool", "name": ""}], "type": "function"}, {"inputs": [{"type": "address[]", "name": "_owners"}, {"type": "uint256", "name": "_required"}, {"type": "uint256", "name": "_dailyLimit"}], "constant": false, "name": "create", "payable": false, "outputs": [{"type": "address", "name": "wallet"}], "type": "function"}, {"inputs": [{"type": "address", "name": ""}, {"type": "uint256", "name": ""}], "constant": true, "name": "instantiations", "payable": false, "outputs": [{"type": "address", "name": ""}], "type": "function"}, {"inputs": [{"type": "address", "name": "creator"}], "constant": true, "name": "getInstantiationCount", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"indexed": false, "type": "address", "name": "sender"}, {"indexed": false, "type": "address", "name": "instantiation"}], "type": "event", "name": "ContractInstantiation", "anonymous": false}];
-const testArrNumbersABI = [{"constant":false,"inputs":[{"name":"n","type":"uint256[]"}],"name":"numbers","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}];
-const abiV2 = [{"constant":false,"inputs":[{"components":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"}],"internalType":"struct EIP712Sig.CallData","name":"callData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAccount","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayAddress","type":"address"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"}],"internalType":"struct EIP712Sig.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct EIP712Sig.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"bytes","name":"signature","type":"bytes"},{"internalType":"bytes","name":"approvalData","type":"bytes"}],"name":"relayCall","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}];
+const testABI = [{
+  "inputs": [{
+    "type": "address",
+    "name": ""
+  }],
+  "constant": true,
+  "name": "isInstantiation",
+  "payable": false,
+  "outputs": [{
+    "type": "bool",
+    "name": ""
+  }],
+  "type": "function"
+}, {
+  "inputs": [{
+    "type": "address[]",
+    "name": "_owners"
+  }, {
+    "type": "uint256",
+    "name": "_required"
+  }, {
+    "type": "uint256",
+    "name": "_dailyLimit"
+  }],
+  "constant": false,
+  "name": "create",
+  "payable": false,
+  "outputs": [{
+    "type": "address",
+    "name": "wallet"
+  }],
+  "type": "function"
+}, {
+  "inputs": [{
+    "type": "address",
+    "name": ""
+  }, {
+    "type": "uint256",
+    "name": ""
+  }],
+  "constant": true,
+  "name": "instantiations",
+  "payable": false,
+  "outputs": [{
+    "type": "address",
+    "name": ""
+  }],
+  "type": "function"
+}, {
+  "inputs": [{
+    "type": "address",
+    "name": "creator"
+  }],
+  "constant": true,
+  "name": "getInstantiationCount",
+  "payable": false,
+  "outputs": [{
+    "type": "uint256",
+    "name": ""
+  }],
+  "type": "function"
+}, {
+  "inputs": [{
+    "indexed": false,
+    "type": "address",
+    "name": "sender"
+  }, {
+    "indexed": false,
+    "type": "address",
+    "name": "instantiation"
+  }],
+  "type": "event",
+  "name": "ContractInstantiation",
+  "anonymous": false
+}];
+const testArrNumbersABI = [{
+  "constant": false,
+  "inputs": [{
+    "name": "n",
+    "type": "uint256[]"
+  }],
+  "name": "numbers",
+  "outputs": [{
+    "name": "",
+    "type": "uint256"
+  }],
+  "payable": false,
+  "stateMutability": "nonpayable",
+  "type": "function"
+}];
+const abiV2 = [{
+  "constant": false,
+  "inputs": [{
+    "components": [{
+      "components": [{
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      }, {
+        "internalType": "uint256",
+        "name": "gasLimit",
+        "type": "uint256"
+      }, {
+        "internalType": "uint256",
+        "name": "gasPrice",
+        "type": "uint256"
+      }, {
+        "internalType": "bytes",
+        "name": "encodedFunction",
+        "type": "bytes"
+      }],
+      "internalType": "struct EIP712Sig.CallData",
+      "name": "callData",
+      "type": "tuple"
+    }, {
+      "components": [{
+        "internalType": "address",
+        "name": "senderAccount",
+        "type": "address"
+      }, {
+        "internalType": "uint256",
+        "name": "senderNonce",
+        "type": "uint256"
+      }, {
+        "internalType": "address",
+        "name": "relayAddress",
+        "type": "address"
+      }, {
+        "internalType": "uint256",
+        "name": "pctRelayFee",
+        "type": "uint256"
+      }],
+      "internalType": "struct EIP712Sig.RelayData",
+      "name": "relayData",
+      "type": "tuple"
+    }],
+    "internalType": "struct EIP712Sig.RelayRequest",
+    "name": "relayRequest",
+    "type": "tuple"
+  }, {
+    "internalType": "bytes",
+    "name": "signature",
+    "type": "bytes"
+  }, {
+    "internalType": "bytes",
+    "name": "approvalData",
+    "type": "bytes"
+  }],
+  "name": "relayCall",
+  "outputs": [],
+  "payable": false,
+  "stateMutability": "nonpayable",
+  "type": "function"
+}];
 
 describe("abi decoder", function () {
   it("get abis", () => {
@@ -40,7 +191,10 @@ describe("abi decoder", function () {
     expect(decodedData.name).to.be.a("string");
     expect(decodedData.params).to.be.a("array");
     expect(decodedData.params).to.have.length(3);
-    expect(decodedData.params[0].value).to.deep.equal([["0x254dffcd3277C0b1660F6d42EFbB754edaBAbC2B", "1000000", "24000000000", "0x2ac0df260000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000"], ["0x50A5cf333FC36A18c8F96B1D1e7a2B013C6267aC", "0", "0x46DCcF96Fe3f3bEEf51c72c68A1F3Ad9183a6561", "12"]]);
+    expect(decodedData.params[0].value).to.deep.equal([
+      ["0x254dffcd3277C0b1660F6d42EFbB754edaBAbC2B", "1000000", "24000000000", "0x2ac0df260000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000"],
+      ["0x50A5cf333FC36A18c8F96B1D1e7a2B013C6267aC", "0", "0x46DCcF96Fe3f3bEEf51c72c68A1F3Ad9183a6561", "12"]
+    ]);
   });
 
   it("decode data", () => {
@@ -80,13 +234,11 @@ describe("abi decoder", function () {
   });
 
   it("decode logs without indexed", () => {
-    const testLogs = [
-      {
-        data: "0x00000000000000000000000065039084cc6f4773291a6ed7dcf5bc3a2e894ff3000000000000000000000000435a4167bc34107bd03e267f9d6b869255151a27",
-        topics: ["0x4fb057ad4a26ed17a57957fa69c306f11987596069b89521c511fc9a894e6161"],
-        address: "0x0457874Bb0a346962128a0C01310d00Fc5bb6a83"
-      }
-    ];
+    const testLogs = [{
+      data: "0x00000000000000000000000065039084cc6f4773291a6ed7dcf5bc3a2e894ff3000000000000000000000000435a4167bc34107bd03e267f9d6b869255151a27",
+      topics: ["0x4fb057ad4a26ed17a57957fa69c306f11987596069b89521c511fc9a894e6161"],
+      address: "0x0457874Bb0a346962128a0C01310d00Fc5bb6a83"
+    }];
 
     const decodedLogs = abiDecoder.decodeLogs(testLogs);
     expect(decodedLogs).to.be.an("array");
@@ -103,15 +255,453 @@ describe("abi decoder", function () {
   });
 
   it("decode logs with indexed param", () => {
-    const walletABI = [{"inputs": [{"type": "uint256", "name": ""}], "constant": true, "name": "owners", "payable": false, "outputs": [{"type": "address", "name": ""}], "type": "function"}, {"inputs": [{"type": "address", "name": "owner"}], "constant": false, "name": "removeOwner", "payable": false, "outputs": [], "type": "function"}, {"inputs": [{"type": "uint256", "name": "transactionId"}], "constant": false, "name": "revokeConfirmation", "payable": false, "outputs": [], "type": "function"}, {"inputs": [{"type": "address", "name": ""}], "constant": true, "name": "isOwner", "payable": false, "outputs": [{"type": "bool", "name": ""}], "type": "function"}, {"inputs": [{"type": "uint256", "name": ""}, {"type": "address", "name": ""}], "constant": true, "name": "confirmations", "payable": false, "outputs": [{"type": "bool", "name": ""}], "type": "function"}, {"inputs": [], "constant": true, "name": "calcMaxWithdraw", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"type": "bool", "name": "pending"}, {"type": "bool", "name": "executed"}], "constant": true, "name": "getTransactionCount", "payable": false, "outputs": [{"type": "uint256", "name": "count"}], "type": "function"}, {"inputs": [], "constant": true, "name": "dailyLimit", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [], "constant": true, "name": "lastDay", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"type": "address", "name": "owner"}], "constant": false, "name": "addOwner", "payable": false, "outputs": [], "type": "function"}, {"inputs": [{"type": "uint256", "name": "transactionId"}], "constant": true, "name": "isConfirmed", "payable": false, "outputs": [{"type": "bool", "name": ""}], "type": "function"}, {"inputs": [{"type": "uint256", "name": "transactionId"}], "constant": true, "name": "getConfirmationCount", "payable": false, "outputs": [{"type": "uint256", "name": "count"}], "type": "function"}, {"inputs": [{"type": "uint256", "name": ""}], "constant": true, "name": "transactions", "payable": false, "outputs": [{"type": "address", "name": "destination"}, {"type": "uint256", "name": "value"}, {"type": "bytes", "name": "data"}, {"type": "bool", "name": "executed"}], "type": "function"}, {"inputs": [], "constant": true, "name": "getOwners", "payable": false, "outputs": [{"type": "address[]", "name": ""}], "type": "function"}, {"inputs": [{"type": "uint256", "name": "from"}, {"type": "uint256", "name": "to"}, {"type": "bool", "name": "pending"}, {"type": "bool", "name": "executed"}], "constant": true, "name": "getTransactionIds", "payable": false, "outputs": [{"type": "uint256[]", "name": "_transactionIds"}], "type": "function"}, {"inputs": [{"type": "uint256", "name": "transactionId"}], "constant": true, "name": "getConfirmations", "payable": false, "outputs": [{"type": "address[]", "name": "_confirmations"}], "type": "function"}, {"inputs": [], "constant": true, "name": "transactionCount", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"type": "uint256", "name": "_required"}], "constant": false, "name": "changeRequirement", "payable": false, "outputs": [], "type": "function"}, {"inputs": [{"type": "uint256", "name": "transactionId"}], "constant": false, "name": "confirmTransaction", "payable": false, "outputs": [], "type": "function"}, {"inputs": [{"type": "address", "name": "destination"}, {"type": "uint256", "name": "value"}, {"type": "bytes", "name": "data"}], "constant": false, "name": "submitTransaction", "payable": false, "outputs": [{"type": "uint256", "name": "transactionId"}], "type": "function"}, {"inputs": [{"type": "uint256", "name": "_dailyLimit"}], "constant": false, "name": "changeDailyLimit", "payable": false, "outputs": [], "type": "function"}, {"inputs": [], "constant": true, "name": "MAX_OWNER_COUNT", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [], "constant": true, "name": "required", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"type": "address", "name": "owner"}, {"type": "address", "name": "newOwner"}], "constant": false, "name": "replaceOwner", "payable": false, "outputs": [], "type": "function"}, {"inputs": [{"type": "uint256", "name": "transactionId"}], "constant": false, "name": "executeTransaction", "payable": false, "outputs": [], "type": "function"}, {"inputs": [], "constant": true, "name": "spentToday", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"type": "address[]", "name": "_owners"}, {"type": "uint256", "name": "_required"}, {"type": "uint256", "name": "_dailyLimit"}], "type": "constructor"}, {"payable": true, "type": "fallback"}, {"inputs": [{"indexed": false, "type": "uint256", "name": "dailyLimit"}], "type": "event", "name": "DailyLimitChange", "anonymous": false}, {"inputs": [{"indexed": true, "type": "address", "name": "sender"}, {"indexed": true, "type": "uint256", "name": "transactionId"}], "type": "event", "name": "Confirmation", "anonymous": false}, {"inputs": [{"indexed": true, "type": "address", "name": "sender"}, {"indexed": true, "type": "uint256", "name": "transactionId"}], "type": "event", "name": "Revocation", "anonymous": false}, {"inputs": [{"indexed": true, "type": "uint256", "name": "transactionId"}], "type": "event", "name": "Submission", "anonymous": false}, {"inputs": [{"indexed": true, "type": "uint256", "name": "transactionId"}], "type": "event", "name": "Execution", "anonymous": false}, {"inputs": [{"indexed": true, "type": "uint256", "name": "transactionId"}], "type": "event", "name": "ExecutionFailure", "anonymous": false}, {"inputs": [{"indexed": true, "type": "address", "name": "sender"}, {"indexed": false, "type": "uint256", "name": "value"}], "type": "event", "name": "Deposit", "anonymous": false}, {"inputs": [{"indexed": true, "type": "address", "name": "owner"}], "type": "event", "name": "OwnerAddition", "anonymous": false}, {"inputs": [{"indexed": true, "type": "address", "name": "owner"}], "type": "event", "name": "OwnerRemoval", "anonymous": false}, {"inputs": [{"indexed": false, "type": "uint256", "name": "required"}], "type": "event", "name": "RequirementChange", "anonymous": false}];
+    const walletABI = [{
+      "inputs": [{
+        "type": "uint256",
+        "name": ""
+      }],
+      "constant": true,
+      "name": "owners",
+      "payable": false,
+      "outputs": [{
+        "type": "address",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "address",
+        "name": "owner"
+      }],
+      "constant": false,
+      "name": "removeOwner",
+      "payable": false,
+      "outputs": [],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "constant": false,
+      "name": "revokeConfirmation",
+      "payable": false,
+      "outputs": [],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "address",
+        "name": ""
+      }],
+      "constant": true,
+      "name": "isOwner",
+      "payable": false,
+      "outputs": [{
+        "type": "bool",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": ""
+      }, {
+        "type": "address",
+        "name": ""
+      }],
+      "constant": true,
+      "name": "confirmations",
+      "payable": false,
+      "outputs": [{
+        "type": "bool",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [],
+      "constant": true,
+      "name": "calcMaxWithdraw",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "bool",
+        "name": "pending"
+      }, {
+        "type": "bool",
+        "name": "executed"
+      }],
+      "constant": true,
+      "name": "getTransactionCount",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": "count"
+      }],
+      "type": "function"
+    }, {
+      "inputs": [],
+      "constant": true,
+      "name": "dailyLimit",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [],
+      "constant": true,
+      "name": "lastDay",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "address",
+        "name": "owner"
+      }],
+      "constant": false,
+      "name": "addOwner",
+      "payable": false,
+      "outputs": [],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "constant": true,
+      "name": "isConfirmed",
+      "payable": false,
+      "outputs": [{
+        "type": "bool",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "constant": true,
+      "name": "getConfirmationCount",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": "count"
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": ""
+      }],
+      "constant": true,
+      "name": "transactions",
+      "payable": false,
+      "outputs": [{
+        "type": "address",
+        "name": "destination"
+      }, {
+        "type": "uint256",
+        "name": "value"
+      }, {
+        "type": "bytes",
+        "name": "data"
+      }, {
+        "type": "bool",
+        "name": "executed"
+      }],
+      "type": "function"
+    }, {
+      "inputs": [],
+      "constant": true,
+      "name": "getOwners",
+      "payable": false,
+      "outputs": [{
+        "type": "address[]",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": "from"
+      }, {
+        "type": "uint256",
+        "name": "to"
+      }, {
+        "type": "bool",
+        "name": "pending"
+      }, {
+        "type": "bool",
+        "name": "executed"
+      }],
+      "constant": true,
+      "name": "getTransactionIds",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256[]",
+        "name": "_transactionIds"
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "constant": true,
+      "name": "getConfirmations",
+      "payable": false,
+      "outputs": [{
+        "type": "address[]",
+        "name": "_confirmations"
+      }],
+      "type": "function"
+    }, {
+      "inputs": [],
+      "constant": true,
+      "name": "transactionCount",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": "_required"
+      }],
+      "constant": false,
+      "name": "changeRequirement",
+      "payable": false,
+      "outputs": [],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "constant": false,
+      "name": "confirmTransaction",
+      "payable": false,
+      "outputs": [],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "address",
+        "name": "destination"
+      }, {
+        "type": "uint256",
+        "name": "value"
+      }, {
+        "type": "bytes",
+        "name": "data"
+      }],
+      "constant": false,
+      "name": "submitTransaction",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": "_dailyLimit"
+      }],
+      "constant": false,
+      "name": "changeDailyLimit",
+      "payable": false,
+      "outputs": [],
+      "type": "function"
+    }, {
+      "inputs": [],
+      "constant": true,
+      "name": "MAX_OWNER_COUNT",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [],
+      "constant": true,
+      "name": "required",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "address",
+        "name": "owner"
+      }, {
+        "type": "address",
+        "name": "newOwner"
+      }],
+      "constant": false,
+      "name": "replaceOwner",
+      "payable": false,
+      "outputs": [],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "constant": false,
+      "name": "executeTransaction",
+      "payable": false,
+      "outputs": [],
+      "type": "function"
+    }, {
+      "inputs": [],
+      "constant": true,
+      "name": "spentToday",
+      "payable": false,
+      "outputs": [{
+        "type": "uint256",
+        "name": ""
+      }],
+      "type": "function"
+    }, {
+      "inputs": [{
+        "type": "address[]",
+        "name": "_owners"
+      }, {
+        "type": "uint256",
+        "name": "_required"
+      }, {
+        "type": "uint256",
+        "name": "_dailyLimit"
+      }],
+      "type": "constructor"
+    }, {
+      "payable": true,
+      "type": "fallback"
+    }, {
+      "inputs": [{
+        "indexed": false,
+        "type": "uint256",
+        "name": "dailyLimit"
+      }],
+      "type": "event",
+      "name": "DailyLimitChange",
+      "anonymous": false
+    }, {
+      "inputs": [{
+        "indexed": true,
+        "type": "address",
+        "name": "sender"
+      }, {
+        "indexed": true,
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "type": "event",
+      "name": "Confirmation",
+      "anonymous": false
+    }, {
+      "inputs": [{
+        "indexed": true,
+        "type": "address",
+        "name": "sender"
+      }, {
+        "indexed": true,
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "type": "event",
+      "name": "Revocation",
+      "anonymous": false
+    }, {
+      "inputs": [{
+        "indexed": true,
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "type": "event",
+      "name": "Submission",
+      "anonymous": false
+    }, {
+      "inputs": [{
+        "indexed": true,
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "type": "event",
+      "name": "Execution",
+      "anonymous": false
+    }, {
+      "inputs": [{
+        "indexed": true,
+        "type": "uint256",
+        "name": "transactionId"
+      }],
+      "type": "event",
+      "name": "ExecutionFailure",
+      "anonymous": false
+    }, {
+      "inputs": [{
+        "indexed": true,
+        "type": "address",
+        "name": "sender"
+      }, {
+        "indexed": false,
+        "type": "uint256",
+        "name": "value"
+      }],
+      "type": "event",
+      "name": "Deposit",
+      "anonymous": false
+    }, {
+      "inputs": [{
+        "indexed": true,
+        "type": "address",
+        "name": "owner"
+      }],
+      "type": "event",
+      "name": "OwnerAddition",
+      "anonymous": false
+    }, {
+      "inputs": [{
+        "indexed": true,
+        "type": "address",
+        "name": "owner"
+      }],
+      "type": "event",
+      "name": "OwnerRemoval",
+      "anonymous": false
+    }, {
+      "inputs": [{
+        "indexed": false,
+        "type": "uint256",
+        "name": "required"
+      }],
+      "type": "event",
+      "name": "RequirementChange",
+      "anonymous": false
+    }];
     abiDecoder.addABI(walletABI);
-    const testLogs = [
-      {
-        data: "0x00000000000000000000000000000000000000000000000000038d7ea4c68000",
-        topics: ["0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c", "0x00000000000000000000000005039084cc6f4773291a6ed7dcf5bc3a2e894ff3"],
-        address: "0x0457874Bb0a346962128a0C01310d00Fc5bb6a81"
-      }
-    ];
+    const testLogs = [{
+      data: "0x00000000000000000000000000000000000000000000000000038d7ea4c68000",
+      topics: ["0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c", "0x00000000000000000000000005039084cc6f4773291a6ed7dcf5bc3a2e894ff3"],
+      address: "0x0457874Bb0a346962128a0C01310d00Fc5bb6a81"
+    }];
     const decodedLogs = abiDecoder.decodeLogs(testLogs);
     expect(decodedLogs).to.be.an("array");
     expect(decodedLogs).to.have.length(1);
@@ -127,20 +717,35 @@ describe("abi decoder", function () {
   });
 
   it("decode logs with indexed param and uint value", () => {
-    const testABI = [{"anonymous":false,"inputs":[{"indexed":true,"name":"voter","type":"address"},{"indexed":true,"name":"pollId","type":"uint256"},{"indexed":true,"name":"optionId","type":"uint256"}],"name":"Voted","type":"event"}];
+    const testABI = [{
+      "anonymous": false,
+      "inputs": [{
+        "indexed": true,
+        "name": "voter",
+        "type": "address"
+      }, {
+        "indexed": true,
+        "name": "pollId",
+        "type": "uint256"
+      }, {
+        "indexed": true,
+        "name": "optionId",
+        "type": "uint256"
+      }],
+      "name": "Voted",
+      "type": "event"
+    }];
     abiDecoder.addABI(testABI);
-    const testLogs = [
-      {
-        data: "0x",
-        "topics": [
-          "0xea66f58e474bc09f580000e81f31b334d171db387d0c6098ba47bd897741679b",
-          "0x00000000000000000000000014341f81df14ca86e1420ec9e6abd343fb1c5bfc",
-          "0x0000000000000000000000000000000000000000000000000000000000000022",
-          "0x00000000000000000000000000000000000000000000000000000000000000f1"
-        ],
-        address: "0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D"
-      }
-    ];
+    const testLogs = [{
+      data: "0x",
+      "topics": [
+        "0xea66f58e474bc09f580000e81f31b334d171db387d0c6098ba47bd897741679b",
+        "0x00000000000000000000000014341f81df14ca86e1420ec9e6abd343fb1c5bfc",
+        "0x0000000000000000000000000000000000000000000000000000000000000022",
+        "0x00000000000000000000000000000000000000000000000000000000000000f1"
+      ],
+      address: "0xF9be8F0945acDdeeDaA64DFCA5Fe9629D0CF8E5D"
+    }];
     const decodedLogs = abiDecoder.decodeLogs(testLogs);
     expect(decodedLogs).to.be.an("array");
     expect(decodedLogs).to.have.length(1);

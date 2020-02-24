@@ -30,8 +30,8 @@ function _addABI(abiArray) {
           abi.name +
           "(" +
           abi.inputs
-          .map(_typeToString)
-          .join(",") +
+            .map(_typeToString)
+            .join(",") +
           ")"
         );
         if (abi.type === "event") {
@@ -57,10 +57,10 @@ function _removeABI(abiArray) {
           abi.name +
           "(" +
           abi.inputs
-          .map(function (input) {
-            return input.type;
-          })
-          .join(",") +
+            .map(function (input) {
+              return input.type;
+            })
+            .join(",") +
           ")"
         );
         if (abi.type === "event") {
@@ -96,45 +96,40 @@ function _decodeMethod(data) {
 
     for (let i = 0; i < decoded.__length__; i++) {
       let param = decoded[i];
-      param.forEach((param) => {
-        let parsedParam = param;
-        const isUint = abiItem.inputs[i].type.indexOf("uint") === 0;
-        const isInt = abiItem.inputs[i].type.indexOf("int") === 0;
-        const isAddress = abiItem.inputs[i].type.indexOf("address") === 0;
+      let parsedParam = param;
+      const isUint = abiItem.inputs[i].type.indexOf("uint") === 0;
+      const isInt = abiItem.inputs[i].type.indexOf("int") === 0;
+      const isAddress = abiItem.inputs[i].type.indexOf("address") === 0;
 
-        if (isUint || isInt) {
-          const isArray = Array.isArray(param);
+      if (isUint || isInt) {
+        const isArray = Array.isArray(param);
 
-          if (isArray) {
-            parsedParam = param.map(val => new BN(val).toString());
-          } else {
-            parsedParam = new BN(param).toString();
-          }
+        if (isArray) {
+          parsedParam = param.map(val => new BN(val).toString());
+        } else {
+          parsedParam = new BN(param).toString();
         }
+      }
 
-        // Addresses returned by web3 are randomly cased so we need to standardize and lowercase all
-        if (isAddress) {
-          const isArray = Array.isArray(param);
+      // Addresses returned by web3 are randomly cased so we need to standardize and lowercase all
+      if (isAddress) {
+        const isArray = Array.isArray(param);
 
-          if (isArray) {
-            //handle cases when the param is a multidimensional array
-            if (param.constructor === Array) {
-              param.forEach((prm) => {
-                parsedParam.push(prm.map(_ => _.toLowerCase()));
-              });
-            } else {
-              parsedParam = param.map(_ => _.toLowerCase());
-            }
+        if (isArray) {
+          if (param[0].constructor === Array) {
+            parsedParam = eval(param.toString().toLowerCase());
           } else {
-            parsedParam = param.toLowerCase();
+            parsedParam = param.map(_ => _.toLowerCase());
           }
+        } else {
+          parsedParam = param.toLowerCase();
         }
+      }
 
-        retData.params.push({
-          name: abiItem.inputs[i].name,
-          value: parsedParam,
-          type: abiItem.inputs[i].type,
-        });
+      retData.params.push({
+        name: abiItem.inputs[i].name,
+        value: parsedParam,
+        type: abiItem.inputs[i].type,
       });
     }
 
