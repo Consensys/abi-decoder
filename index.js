@@ -175,13 +175,15 @@ function _decodeLogs(logs) {
         }
 
         if (param.type === "address") {
-          decodedP.value = decodedP.value.toLowerCase();
-          // 42 because len(0x) + 40
-          if (decodedP.value.length > 42) {
-            let toRemove = decodedP.value.length - 42;
-            let temp = decodedP.value.split("");
-            temp.splice(2, toRemove);
-            decodedP.value = temp.join("");
+          if (decodedP.value) {
+            decodedP.value = decodedP.value.toLowerCase();
+            // 42 because len(0x) + 40
+            if (decodedP.value.length > 42) {
+              let toRemove = decodedP.value.length - 42;
+              let temp = decodedP.value.split("");
+              temp.splice(2, toRemove);
+              decodedP.value = temp.join("");
+            }
           }
         }
 
