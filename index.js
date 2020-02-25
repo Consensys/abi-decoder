@@ -1,4 +1,7 @@
-const { sha3, BN } = require("web3-utils");
+const {
+  sha3,
+  BN
+} = require("web3-utils");
 const abiCoder = require("web3-eth-abi");
 
 const state = {
@@ -21,15 +24,15 @@ function _addABI(abiArray) {
 
   if (Array.isArray(abiArray)) {
     // Iterate new abi to generate method id"s
-    abiArray.map(function(abi) {
+    abiArray.map(function (abi) {
       if (abi.name) {
         const signature = sha3(
           abi.name +
-            "(" +
-            abi.inputs
-              .map(_typeToString)
-              .join(",") +
-            ")"
+          "(" +
+          abi.inputs
+            .map(_typeToString)
+            .join(",") +
+          ")"
         );
         if (abi.type === "event") {
           state.methodIDs[signature.slice(2)] = abi;
@@ -48,17 +51,17 @@ function _addABI(abiArray) {
 function _removeABI(abiArray) {
   if (Array.isArray(abiArray)) {
     // Iterate new abi to generate method id"s
-    abiArray.map(function(abi) {
+    abiArray.map(function (abi) {
       if (abi.name) {
         const signature = sha3(
           abi.name +
-            "(" +
-            abi.inputs
-              .map(function(input) {
-                return input.type;
-              })
-              .join(",") +
-            ")"
+          "(" +
+          abi.inputs
+            .map(function (input) {
+              return input.type;
+            })
+            .join(",") +
+          ")"
         );
         if (abi.type === "event") {
           if (state.methodIDs[signature.slice(2)]) {
@@ -113,7 +116,11 @@ function _decodeMethod(data) {
         const isArray = Array.isArray(param);
 
         if (isArray) {
-          parsedParam = param.map(_ => _.toLowerCase());
+          if (param[0].constructor === Array) {
+            parsedParam = eval(param.toString().toLowerCase());
+          } else {
+            parsedParam = param.map(_ => _.toLowerCase());
+          }
         } else {
           parsedParam = param.toLowerCase();
         }
@@ -141,7 +148,7 @@ function _decodeLogs(logs) {
       let topicsIndex = 1;
 
       let dataTypes = [];
-      method.inputs.map(function(input) {
+      method.inputs.map(function (input) {
         if (!input.indexed) {
           dataTypes.push(input.type);
         }
@@ -153,7 +160,7 @@ function _decodeLogs(logs) {
       );
 
       // Loop topic and data to get the params
-      method.inputs.map(function(param) {
+      method.inputs.map(function (param) {
         let decodedP = {
           name: param.name,
           type: param.type,
@@ -168,13 +175,15 @@ function _decodeLogs(logs) {
         }
 
         if (param.type === "address") {
-          decodedP.value = decodedP.value.toLowerCase();
-          // 42 because len(0x) + 40
-          if (decodedP.value.length > 42) {
-            let toRemove = decodedP.value.length - 42;
-            let temp = decodedP.value.split("");
-            temp.splice(2, toRemove);
-            decodedP.value = temp.join("");
+          if (decodedP.value) {
+            decodedP.value = decodedP.value.toLowerCase();
+            // 42 because len(0x) + 40
+            if (decodedP.value.length > 42) {
+              let toRemove = decodedP.value.length - 42;
+              let temp = decodedP.value.split("");
+              temp.splice(2, toRemove);
+              decodedP.value = temp.join("");
+            }
           }
         }
 
