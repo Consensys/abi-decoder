@@ -170,4 +170,29 @@ describe("abi decoder", function () {
     expect(Object.keys(methods)).to.have.length(39);
   });
 
+  it("decode logs for tuple input", () => {
+    const testABIWithTuple= [{"anonymous":false,"inputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"string","name":"name","type":"string"}],"indexed":false,"internalType":"struct TestEvent.EventInfo","name":"eventInfo","type":"tuple"}],"name":"Event","type":"event"},{"inputs":[{"internalType":"uint256","name":"_id","type":"uint256"},{"internalType":"string","name":"_name","type":"string"}],"name":"fireEvent","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+    abiDecoder.addABI(testABIWithTuple);
+    const testLogsWithTuple=
+      [
+        {
+          data : "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000003e80000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000a666972652d6576656e7400000000000000000000000000000000000000000000",
+          topics : ["0xe70874d47996054618fb5fc961c81a9ad9dfdfd01119e36286ef1a9720935598"],
+          address: "0xB8A71c450580726bAa7Bfe48b2DBE2b9a2f06764"
+        }
+      ];
+
+    const decodedLogs = abiDecoder.decodeLogs(testLogsWithTuple);
+    expect(decodedLogs).to.be.an("array");
+    expect(decodedLogs).to.have.length(1);
+    expect(decodedLogs[0].name).to.equal("Event");
+    expect(decodedLogs[0].events).to.have.length(1);
+    expect(decodedLogs[0].address).to.equal("0xB8A71c450580726bAa7Bfe48b2DBE2b9a2f06764");
+    expect(decodedLogs[0].events[0].name).to.equal("eventInfo");
+    expect(decodedLogs[0].events[0].value).to.be.an("array");
+    expect(decodedLogs[0].events[0].value[0]).to.be.equal("1000");
+    expect(decodedLogs[0].events[0].value[1]).to.be.equal("fire-event");
+    expect(decodedLogs[0].events[0].type).to.equal("tuple");
+
+  });
 });
