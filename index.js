@@ -143,7 +143,11 @@ function _decodeLogs(logs) {
       let dataTypes = [];
       method.inputs.map(function(input) {
         if (!input.indexed) {
-          dataTypes.push(input.type);
+          if(input.type === "tuple") {
+            dataTypes.push("tuple" + _typeToString(input) );
+          } else {
+            dataTypes.push(input);
+          }
         }
       });
 
