@@ -13,6 +13,8 @@ function _getABIs() {
 function _typeToString(input) {
   if (input.type === "tuple") {
     return "(" + input.components.map(_typeToString).join(",") + ")";
+  } else if (input.type.substring(0, "tuple".length) === "tuple") { // tuple[], or tuple[][], etc
+    return "(" + input.components.map(_typeToString).join(",") + ")" + input.type.substring("tuple".length);
   }
   return input.type;
 }
