@@ -14,6 +14,9 @@ function _typeToString(input) {
   if (input.type === "tuple") {
     return "(" + input.components.map(_typeToString).join(",") + ")";
   }
+  if (input.type === "tuple[]") {
+    return "(" + input.components.map(_typeToString).join(",") + ")[]";
+  }
   return input.type;
 }
 
