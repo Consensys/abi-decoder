@@ -79,6 +79,21 @@ describe("abi decoder", function () {
     expect(decodedData.params[0].type).to.equal("uint256[]");
   });
 
+  it("decode abi with array struct as param", () => {
+    const testABI = [{"inputs":[{"components":[{"internalType":"address","name":"pool","type":"address"},{"internalType":"address","name":"tokenIn","type":"address"},{"internalType":"address","name":"tokenOut","type":"address"},{"internalType":"uint256","name":"swapAmount","type":"uint256"},{"internalType":"uint256","name":"limitReturnAmount","type":"uint256"},{"internalType":"uint256","name":"maxPrice","type":"uint256"}],"internalType":"struct IFireBirdRouter.Swap[][]","name":"swapSequences","type":"tuple[][]"},{"internalType":"address","name":"tokenIn","type":"address"},{"internalType":"address","name":"tokenOut","type":"address"},{"internalType":"uint256","name":"totalAmountIn","type":"uint256"},{"internalType":"uint256","name":"minTotalAmountOut","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"multihopBatchSwapExactIn","outputs":[{"internalType":"uint256","name":"totalAmountOut","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"components":[{"internalType":"address","name":"pool","type":"address"},{"internalType":"address","name":"tokenIn","type":"address"},{"internalType":"address","name":"tokenOut","type":"address"},{"internalType":"uint256","name":"swapAmount","type":"uint256"},{"internalType":"uint256","name":"limitReturnAmount","type":"uint256"},{"internalType":"uint256","name":"maxPrice","type":"uint256"}],"internalType":"struct IFireBirdRouter.Swap[][]","name":"swapSequences","type":"tuple[][]"},{"internalType":"address","name":"tokenIn","type":"address"},{"internalType":"address","name":"tokenOut","type":"address"},{"internalType":"uint256","name":"maxTotalAmountIn","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"multihopBatchSwapExactOut","outputs":[{"internalType":"uint256","name":"totalAmountIn","type":"uint256"}],"stateMutability":"payable","type":"function"}];
+    abiDecoder.addABI(testABI);
+    const testData = "0xce81963200000000000000000000000000000000000000000000000000000000000000c00000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa841740000000000000000000000007ceb23fd6bc0add59e62ac25578270cff1b9f6190000000000000000000000000000000000000000000000000000000013697fd50000000000000000000000000000000000000000000000000295993737da03600000000000000000000000000000000000000000000000000000000060f6d69e0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000000000000000000000000000000000000000000020000000000000000000000004c38938e21cb9796932b0b0cc3f8a088f07b49b00000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa84174000000000000000000000000c168e40227e4ebd8c1cae80f7a55a4f0e6d66c970000000000000000000000000000000000000000000000000000000013679aef0000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000006fa867bbfdd025780a8cfe988475220aff51fb8b000000000000000000000000c168e40227e4ebd8c1cae80f7a55a4f0e6d66c970000000000000000000000007ceb23fd6bc0add59e62ac25578270cff1b9f61900000000000000000000000000000000000000000000000e06cd1a4097a1da500000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000af623e96d38191038c48990df298e07fb77b56c30000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa84174000000000000000000000000845e76a8691423fbc4ecb8dd77556cb61c09ee25000000000000000000000000000000000000000000000000000000000001e4e60000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff000000000000000000000000fa4218d03ae852858c01505a7227edcbe2f0b293000000000000000000000000845e76a8691423fbc4ecb8dd77556cb61c09ee250000000000000000000000007ceb23fd6bc0add59e62ac25578270cff1b9f61900000000000000000000000000000000000000000000000003e42a6d0c8dae020000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+    const decodedData = abiDecoder.decodeMethod(testData);
+    expect(decodedData).to.be.an("object");
+    expect(decodedData).to.have.all.keys("name", "params");
+    expect(decodedData.name).to.be.a("string");
+    expect(decodedData.params).to.be.a("array");
+    expect(decodedData.params).to.have.length(6);
+    expect(decodedData.params[0].value[0]).to.be.a("array");
+    expect(decodedData.params[0].value[0][0]).to.be.a("array");
+    expect(decodedData.params[0].type).to.equal("tuple[][]");
+  });
+
   it("decode logs without indexed", () => {
     const testLogs = [
       {
@@ -161,13 +176,13 @@ describe("abi decoder", function () {
   it("remove ABI", () => {
     let methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length(44);
+    expect(Object.keys(methods)).to.have.length(46);
 
     abiDecoder.removeABI(testABI);
 
     methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length(39);
+    expect(Object.keys(methods)).to.have.length(41);
   });
 
 });
