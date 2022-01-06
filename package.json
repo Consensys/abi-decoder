@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "pretest": "eslint --ignore-path .eslintignore .",
+    "lint": "./node_modules/.bin/eslint ./",
+    "lint:fix": "eslint ./ --fix",
     "test": "mocha test",
     "dist": "webpack"
   },
