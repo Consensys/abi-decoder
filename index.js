@@ -147,6 +147,10 @@ function _decodeLogs(logs) {
     // it means its erc20 transaction
     if (methodID === transferSignature && log.topics.length===3)
       method = state.erc20IDs[methodID];
+      // if the dev have not supplied the erc721 abi, we will fetch erc20 method event info from methods
+    if (!method){
+      method = state.methodIDs[methodID];
+    }
     else
       method = state.methodIDs[methodID];
     let decodedParams = [];

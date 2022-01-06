@@ -170,4 +170,36 @@ describe("abi decoder", function () {
     expect(Object.keys(methods)).to.have.length(39);
   });
 
+  it("decode erc20 logs", () => {
+    const testABI = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"}];
+    abiDecoder.addABI(testABI);
+    const testLogs = [
+      {
+        data: "0x00000000000000000000000000000000000000000000000c1b1c7851eb4743ed",
+        topics: [
+          "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+          "0x0000000000000000000000009963c5d9b0a02d6316e546677c73932b0a60df1f",
+          "0x000000000000000000000000fd79fa24d5a883e90ed60d1c080f49cba6c925da",
+        ],
+        address: "0x2E10348eE563dEc5FE483DE558D1946b7A3372c2"
+      }
+    ];
+    const decodedLogs = abiDecoder.decodeLogs(testLogs);
+    expect(decodedLogs).to.be.an("array");
+    expect(decodedLogs).to.have.length(1);
+    expect(decodedLogs[0].name).to.equal("Transfer");
+    expect(decodedLogs[0].events).to.have.length(3);
+    expect(decodedLogs[0].address).to.equal("0x2E10348eE563dEc5FE483DE558D1946b7A3372c2");
+    expect(decodedLogs[0].events[0].name).to.equal("from");
+    expect(decodedLogs[0].events[0].type).to.equal("address");
+    expect(decodedLogs[0].events[0].value).to.equal("0x9963c5d9b0a02d6316e546677c73932b0a60df1f");
+    expect(decodedLogs[0].events[1].name).to.equal("to");
+    expect(decodedLogs[0].events[1].type).to.equal("address");
+    expect(decodedLogs[0].events[1].value).to.equal("0xfd79fa24d5a883e90ed60d1c080f49cba6c925da");
+    expect(decodedLogs[0].events[2].type).to.equal("uint256");
+    expect(decodedLogs[0].events[2].name).to.equal("value");
+    expect(decodedLogs[0].events[2].value).to.equal("223314497516121572333");
+
+  });
+
 });
