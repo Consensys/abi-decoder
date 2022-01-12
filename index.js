@@ -145,12 +145,14 @@ function _decodeLogs(logs) {
     const methodID = log.topics[0].slice(2);
     // methodid mathches with erc20 transfer event and topic count length is 3
     // it means its erc20 transaction
-    if (methodID === transferSignature && log.topics.length===3)
+    if (methodID === transferSignature && log.topics.length===3){
       method = state.erc20IDs[methodID];
       // if the dev have not supplied the erc721 abi, we will fetch erc20 method event info from methods
-    if (!method){
+      if (!method){
       method = state.methodIDs[methodID];
     }
+    }
+
     else
       method = state.methodIDs[methodID];
     let decodedParams = [];
