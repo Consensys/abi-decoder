@@ -145,7 +145,7 @@ function _decodeLogs(logs) {
     const methodID = log.topics[0].slice(2);
     // methodid mathches with erc20 transfer event and topic count length is 3
     // it means its erc20 transaction
-    if (methodID === transferSignature && log.topics.length===1){
+    if (methodID === transferSignature && log.topics.length<3){
       continue
     }
     else if (methodID === transferSignature && log.topics.length===3){
