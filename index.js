@@ -1,9 +1,11 @@
 const { sha3, BN } = require("web3-utils");
 const abiCoder = require("web3-eth-abi");
-
+// topic id erc20 and erc721
+const transferSignature = "ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
 const state = {
   savedABIs: [],
   methodIDs: {},
+  erc20IDs:{}
 };
 
 function _getABIs() {
@@ -32,7 +34,11 @@ function _addABI(abiArray) {
             ")"
         );
         if (abi.type === "event") {
-          state.methodIDs[signature.slice(2)] = abi;
+          // add erc20 event in separate array
+          if ( state.methodIDs[signature.slice(2)] && signature.slice(2) === transferSignature)
+            state.erc20IDs[[signature.slice(2)]] = abi;
+          else
+            state.methodIDs[signature.slice(2)] = abi;
         } else {
           state.methodIDs[signature.slice(2, 10)] = abi;
         }
@@ -131,12 +137,30 @@ function _decodeMethod(data) {
 }
 
 function _decodeLogs(logs) {
-  return logs.filter(log => log.topics.length > 0).map((logItem) => {
-    const methodID = logItem.topics[0].slice(2);
-    const method = state.methodIDs[methodID];
+  const logsToProcess = logs.filter(log => log.topics.length > 0);
+  const resultSet = [];
+  for (let index = 0; index < logsToProcess.length; index++) {
+    let method;
+    const log = logsToProcess[index];
+    const methodID = log.topics[0].slice(2);
+    // methodid mathches with erc20 transfer event and topic count length is 3
+    // it means its erc20 transaction
+    if (methodID === transferSignature && log.topics.length<3){
+      continue
+    }
+    else if (methodID === transferSignature && log.topics.length===3){
+      method = state.erc20IDs[methodID];
+      // if the dev have not supplied the erc721 abi, we will fetch erc20 method event info from methods
+      if (!method){
+      method = state.methodIDs[methodID];
+    }
+    }
+
+    else
+      method = state.methodIDs[methodID];
+    let decodedParams = [];
     if (method) {
-      const logData = logItem.data;
-      let decodedParams = [];
+      const logData = log.data;
       let dataIndex = 0;
       let topicsIndex = 1;
 
@@ -146,27 +170,26 @@ function _decodeLogs(logs) {
           dataTypes.push(input.type);
         }
       });
-
       const decodedData = abiCoder.decodeParameters(
         dataTypes,
         logData.slice(2)
       );
-
+      
       // Loop topic and data to get the params
       method.inputs.map(function(param) {
         let decodedP = {
           name: param.name,
           type: param.type,
         };
-
+      
         if (param.indexed) {
-          decodedP.value = logItem.topics[topicsIndex];
+          decodedP.value = log.topics[topicsIndex];
           topicsIndex++;
         } else {
           decodedP.value = decodedData[dataIndex];
           dataIndex++;
         }
-
+      
         if (param.type === "address") {
           decodedP.value = decodedP.value.toLowerCase();
           // 42 because len(0x) + 40
@@ -177,11 +200,11 @@ function _decodeLogs(logs) {
             decodedP.value = temp.join("");
           }
         }
-
+      
         if (
           param.type === "uint256" ||
-          param.type === "uint8" ||
-          param.type === "int"
+                param.type === "uint8" ||
+                param.type === "int"
         ) {
           // ensure to remove leading 0x for hex numbers
           if (typeof decodedP.value === "string" && decodedP.value.startsWith("0x")) {
@@ -189,19 +212,19 @@ function _decodeLogs(logs) {
           } else {
             decodedP.value = new BN(decodedP.value).toString(10);
           }
-
+      
         }
-
+      
         decodedParams.push(decodedP);
       });
-
-      return {
+      resultSet.push({
         name: method.name,
         events: decodedParams,
-        address: logItem.address,
-      };
+        address: log.address,
+      });
     }
-  });
+  }
+  return resultSet;
 }
 
 module.exports = {
