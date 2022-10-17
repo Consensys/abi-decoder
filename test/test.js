@@ -79,6 +79,56 @@ describe("abi decoder", function () {
     expect(decodedData.params[0].type).to.equal("uint256[]");
   });
 
+  it("decode data with struct arrays", () => {
+    abiDecoder.addABI(		[
+      {
+        "inputs": [
+          {
+            "components": [
+              {
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "internalType": "uint32",
+                "name": "age",
+                "type": "uint32"
+              },
+              {
+                "internalType": "address",
+                "name": "wallet",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct Storage.Person[]",
+            "name": "people",
+            "type": "tuple[]"
+          }
+        ],
+        "name": "store",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+    ]);
+    const testData = "0x5e266ab9000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000190000000000000000000000005b38da6a701c568545dcfcb03fcb875f56beddc40000000000000000000000000000000000000000000000000000000000000003746f6d0000000000000000000000000000000000000000000000000000000000";
+    const decodedData = abiDecoder.decodeMethod(testData);
+    expect(decodedData).to.be.an("object");
+    expect(decodedData).to.have.all.keys("name", "params");
+    expect(decodedData.name).to.equal("store");
+    expect(decodedData.params).to.be.a("array");
+    expect(decodedData.params).to.have.length(1);
+    expect(decodedData.params[0].name).to.equal("people");
+    expect(decodedData.params[0].type).to.equal("tuple[]");
+    decodedData.params[0].value.forEach((value) => {
+      expect(value).to.have.length(3);
+      expect(value[0]).to.equal("tom");
+      expect(value[1]).to.equal("25");
+      expect(value[2]).to.equal("0x5B38Da6a701c568545dCfcB03FcB875f56beddC4");
+    });
+  });
+
   it("decode logs without indexed", () => {
     const testLogs = [
       {
@@ -161,13 +211,13 @@ describe("abi decoder", function () {
   it("remove ABI", () => {
     let methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length(44);
+    expect(Object.keys(methods)).to.have.length(45);
 
     abiDecoder.removeABI(testABI);
 
     methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length(39);
+    expect(Object.keys(methods)).to.have.length(40);
   });
 
 });

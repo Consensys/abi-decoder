@@ -11,10 +11,12 @@ function _getABIs() {
 }
 
 function _typeToString(input) {
-  if (input.type === "tuple") {
-    return "(" + input.components.map(_typeToString).join(",") + ")";
+  let inputString = input.type;
+  if (input.type.includes("tuple")) {
+    inputString = "(" + input.components.map(_typeToString).join(",") + ")";
+    inputString += input.type.substring(5);
   }
-  return input.type;
+  return inputString;
 }
 
 function _addABI(abiArray) {
