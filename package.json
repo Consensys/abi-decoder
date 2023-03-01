@@ -39,7 +39,7 @@
     "chai": "^4.2.0",
     "eslint": "^6.0.1",
     "json-loader": "^0.5.7",
-    "mocha": "^5.2.0",
+    "mocha": "^10.2.0",
     "webpack": "^4.29.1",
     "webpack-cli": "^3.2.3"
   }
