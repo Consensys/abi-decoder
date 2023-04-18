@@ -5,6 +5,7 @@ const abiDecoder = require("../index.js");
 const testABI = [{"inputs": [{"type": "address", "name": ""}], "constant": true, "name": "isInstantiation", "payable": false, "outputs": [{"type": "bool", "name": ""}], "type": "function"}, {"inputs": [{"type": "address[]", "name": "_owners"}, {"type": "uint256", "name": "_required"}, {"type": "uint256", "name": "_dailyLimit"}], "constant": false, "name": "create", "payable": false, "outputs": [{"type": "address", "name": "wallet"}], "type": "function"}, {"inputs": [{"type": "address", "name": ""}, {"type": "uint256", "name": ""}], "constant": true, "name": "instantiations", "payable": false, "outputs": [{"type": "address", "name": ""}], "type": "function"}, {"inputs": [{"type": "address", "name": "creator"}], "constant": true, "name": "getInstantiationCount", "payable": false, "outputs": [{"type": "uint256", "name": ""}], "type": "function"}, {"inputs": [{"indexed": false, "type": "address", "name": "sender"}, {"indexed": false, "type": "address", "name": "instantiation"}], "type": "event", "name": "ContractInstantiation", "anonymous": false}];
 const testArrNumbersABI = [{"constant":false,"inputs":[{"name":"n","type":"uint256[]"}],"name":"numbers","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}];
 const abiV2 = [{"constant":false,"inputs":[{"components":[{"components":[{"internalType":"address","name":"target","type":"address"},{"internalType":"uint256","name":"gasLimit","type":"uint256"},{"internalType":"uint256","name":"gasPrice","type":"uint256"},{"internalType":"bytes","name":"encodedFunction","type":"bytes"}],"internalType":"struct EIP712Sig.CallData","name":"callData","type":"tuple"},{"components":[{"internalType":"address","name":"senderAccount","type":"address"},{"internalType":"uint256","name":"senderNonce","type":"uint256"},{"internalType":"address","name":"relayAddress","type":"address"},{"internalType":"uint256","name":"pctRelayFee","type":"uint256"}],"internalType":"struct EIP712Sig.RelayData","name":"relayData","type":"tuple"}],"internalType":"struct EIP712Sig.RelayRequest","name":"relayRequest","type":"tuple"},{"internalType":"bytes","name":"signature","type":"bytes"},{"internalType":"bytes","name":"approvalData","type":"bytes"}],"name":"relayCall","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}];
+const testArrTuplesABI = [{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"components":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"bool","name":"stable","type":"bool"}],"internalType":"struct RouterV2.route[]","name":"routes","type":"tuple[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"}];
 
 describe("abi decoder", function () {
   it("get abis", () => {
@@ -41,6 +42,47 @@ describe("abi decoder", function () {
     expect(decodedData.params).to.be.a("array");
     expect(decodedData.params).to.have.length(3);
     expect(decodedData.params[0].value).to.deep.equal([["0x254dffcd3277C0b1660F6d42EFbB754edaBAbC2B", "1000000", "24000000000", "0x2ac0df260000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000"], ["0x50A5cf333FC36A18c8F96B1D1e7a2B013C6267aC", "0", "0x46DCcF96Fe3f3bEEf51c72c68A1F3Ad9183a6561", "12"]]);
+  });
+
+  it("add abis which contain tuple array", () => {
+    abiDecoder.addABI(testArrTuplesABI);
+    const methodIDs = abiDecoder.getMethodIDs();
+    const abis = abiDecoder.getABIs();
+    expect(abis).to.have.length(8);
+    expect(Object.keys(methodIDs)[6]).to.be.equal("f41766d8");
+  });
+
+  it("decode tuple array data", () => {
+    abiDecoder.addABI(testArrTuplesABI);
+    const testData = "0xf41766d80000000000000000000000000000000000000000000000460b9c534b23acd15500000000000000000000000000000000000000000000002cbc7e1db5899a524000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000045a1f7fabfd9c69384f75740a8c1cc4aed33d7a90000000000000000000000000000000000000000000000000000000063edf4b60000000000000000000000000000000000000000000000000000000000000002000000000000000000000000f4c8e32eadec4bfe97e0f595add0f4450a863a11000000000000000000000000bb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000bb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c000000000000000000000000e9e7cea3dedca5984780bafc599bd69add087d560000000000000000000000000000000000000000000000000000000000000000";
+    const decodedData = abiDecoder.decodeMethod(testData);
+    expect(decodedData).to.be.an("object");
+    expect(decodedData).to.have.all.keys("name", "params");
+    expect(decodedData.name).to.be.a("string");
+    expect(decodedData.params).to.be.a("array");
+    expect(decodedData.params).to.have.length(5);
+    expect(decodedData.params[0].value).to.deep.equal("1292108720372638863701");
+    expect(decodedData.params[0].name).to.equal("amountIn");
+    expect(decodedData.params[0].type).to.equal("uint256");
+    expect(decodedData.params[1].value).to.equal("825239065434951144000");
+    expect(decodedData.params[1].name).to.equal("amountOutMin");
+    expect(decodedData.params[1].type).to.equal("uint256");
+    expect(decodedData.params[2].value).to.be.a("array");
+    expect(decodedData.params[2].value).to.have.length(2);
+    expect(decodedData.params[2].name).to.equal("routes");
+    expect(decodedData.params[2].type).to.equal("tuple[]");
+    expect(decodedData.params[2].value[0].from).to.equal("0xF4C8E32EaDEC4BFe97E0F595AdD0f4450a863a11");
+    expect(decodedData.params[2].value[0].to).to.equal("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");
+    expect(decodedData.params[2].value[0].stable).to.equal(false);
+    expect(decodedData.params[2].value[1].from).to.equal("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");
+    expect(decodedData.params[2].value[1].to).to.equal("0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56");
+    expect(decodedData.params[2].value[1].stable).to.equal(false);
+    expect(decodedData.params[3].value).to.equal("0x45a1f7fabfd9c69384f75740a8c1cc4aed33d7a9");
+    expect(decodedData.params[3].name).to.equal("to");
+    expect(decodedData.params[3].type).to.equal("address");
+    expect(decodedData.params[4].value).to.equal("1676539062");
+    expect(decodedData.params[4].name).to.equal("deadline");
+    expect(decodedData.params[4].type).to.equal("uint256");
   });
 
   it("decode data", () => {
@@ -161,13 +203,13 @@ describe("abi decoder", function () {
   it("remove ABI", () => {
     let methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length(44);
+    expect(Object.keys(methods)).to.have.length(45);
 
     abiDecoder.removeABI(testABI);
 
     methods = abiDecoder.getMethodIDs();
     expect(methods).to.be.an("object");
-    expect(Object.keys(methods)).to.have.length(39);
+    expect(Object.keys(methods)).to.have.length(40);
   });
 
 });
