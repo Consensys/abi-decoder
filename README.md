@@ -32,3 +32,10 @@ web3.eth.getTransactionReceipt("0x9199e262aaab0a6ec99558b3e9f42397c07a2bb9c6befb
   const decodedLogs = abiDecoder.decodeLogs(receipt.logs);
 });
 ```
+
+# PR applied
+- Decode Logs function : Support tokenId with uint256 #88(https://github.com/Consensys/abi-decoder/pull/88)
+- Fix for issue #52 #54(https://github.com/Consensys/abi-decoder/pull/54)
+- fix can not decode struct tuple logs #62(https://github.com/Consensys/abi-decoder/pull/62)
+- Upgrade deps web3-eth-abi to v1.8.0. #86(https://github.com/Consensys/abi-decoder/pull/86)
+- Add support for tuple array #101(https://github.com/Consensys/abi-decoder/pull/101/files)

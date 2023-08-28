@@ -11,6 +11,9 @@ function _getABIs() {
 }
 
 function _typeToString(input) {
+  if (input.type === "tuple[]") {
+    return "(" + input.components.map(_typeToString).join(",") + ")[]";
+  }
   if (input.type === "tuple") {
     return "(" + input.components.map(_typeToString).join(",") + ")";
   }
@@ -113,7 +116,12 @@ function _decodeMethod(data) {
         const isArray = Array.isArray(param);
 
         if (isArray) {
-          parsedParam = param.map(_ => _.toLowerCase());
+          //parsedParam = param.map(_ => _.toLowerCase());
+          if (param[0].constructor === Array) {
+            parsedParam = eval(param.toString().toLowerCase());
+          } else {
+            parsedParam = param.map(_ => _.toLowerCase());
+          }
         } else {
           parsedParam = param.toLowerCase();
         }
@@ -143,7 +151,12 @@ function _decodeLogs(logs) {
       let dataTypes = [];
       method.inputs.map(function(input) {
         if (!input.indexed) {
-          dataTypes.push(input.type);
+          //dataTypes.push(input.type);
+          if(input.type === "tuple") {
+            dataTypes.push("tuple" + _typeToString(input) );
+          } else {
+            dataTypes.push(input);
+          }
         }
       });
 
