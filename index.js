@@ -74,10 +74,17 @@ function _removeABI(abiArray) {
         }
       }
     });
+
+    // Remove the ABI from state.savedABIs
+    state.savedABIs = state.savedABIs.filter((savedAbi) => {
+      return !abiArray.includes(savedAbi);
+    });
+
   } else {
     throw new Error("Expected ABI array, got " + typeof abiArray);
   }
 }
+
 
 function _getMethodIDs() {
   return state.methodIDs;
