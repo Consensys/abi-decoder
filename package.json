@@ -1,6 +1,6 @@
 {
-  "name": "abi-decoder",
-  "version": "2.3.0",
+  "name": "abi-decoder-ex",
+  "version": "2.3.4",
   "description": "Nodejs and Javascript library for decoding data params and events from ethereum transactions\"",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ConsenSys/abi-decoder.git"
+    "url": "git+https://github.com/eigenphi/abi-decoder"
   },
   "keywords": [
     "ethereum",
@@ -20,11 +20,11 @@
   "author": "denis@gnosis.pm",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/ConsenSys/abi-decoder/issues"
+    "url": "https://github.com/eigenphi/abi-decoder/issues"
   },
-  "homepage": "https://github.com/ConsenSys/abi-decoder#readme",
+  "homepage": "https://github.com/eigenphi/abi-decoder#readme",
   "dependencies": {
-    "web3-eth-abi": "^1.2.1",
+    "web3-eth-abi": "^1.8.0",
     "web3-utils": "^1.2.1"
   },
   "devDependencies": {

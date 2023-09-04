@@ -11,6 +11,9 @@ function _getABIs() {
 }
 
 function _typeToString(input) {
+  if (input.type === "tuple[]") {
+    return "(" + input.components.map(_typeToString).join(",") + ")[]";
+  }
   if (input.type === "tuple") {
     return "(" + input.components.map(_typeToString).join(",") + ")";
   }
@@ -71,10 +74,17 @@ function _removeABI(abiArray) {
         }
       }
     });
+
+    // Remove the ABI from state.savedABIs
+    state.savedABIs = state.savedABIs.filter((savedAbi) => {
+      return !abiArray.includes(savedAbi);
+    });
+
   } else {
     throw new Error("Expected ABI array, got " + typeof abiArray);
   }
 }
+
 
 function _getMethodIDs() {
   return state.methodIDs;
@@ -113,7 +123,12 @@ function _decodeMethod(data) {
         const isArray = Array.isArray(param);
 
         if (isArray) {
-          parsedParam = param.map(_ => _.toLowerCase());
+          //parsedParam = param.map(_ => _.toLowerCase());
+          if (param[0].constructor === Array) {
+            parsedParam = eval(param.toString().toLowerCase());
+          } else {
+            parsedParam = param.map(_ => _.toLowerCase());
+          }
         } else {
           parsedParam = param.toLowerCase();
         }
@@ -143,7 +158,12 @@ function _decodeLogs(logs) {
       let dataTypes = [];
       method.inputs.map(function(input) {
         if (!input.indexed) {
-          dataTypes.push(input.type);
+          //dataTypes.push(input.type);
+          if(input.type === "tuple") {
+            dataTypes.push("tuple" + _typeToString(input) );
+          } else {
+            dataTypes.push(input);
+          }
         }
       });
 
@@ -185,7 +205,7 @@ function _decodeLogs(logs) {
         ) {
           // ensure to remove leading 0x for hex numbers
           if (typeof decodedP.value === "string" && decodedP.value.startsWith("0x")) {
-            decodedP.value = new BN(decodedP.value.slice(2), 16).toString(10);
+            decodedP.value = new BN(decodedP.value, 16).toString(10);
           } else {
             decodedP.value = new BN(decodedP.value).toString(10);
           }
